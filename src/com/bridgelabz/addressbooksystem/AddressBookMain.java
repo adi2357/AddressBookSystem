@@ -10,7 +10,7 @@ public class AddressBookMain {
 	private Map<String, Contacts> addressBook = new TreeMap<String, Contacts>();
 
 	public void addContactToAddressBook(Contacts contact) {
-		addressBook.put(contact.getFullName(), contact);
+		addressBook.put(contact.getFullName(), contact);		
 	}
 
 	public void displayAddressBook() {
@@ -18,6 +18,49 @@ public class AddressBookMain {
 			System.out.println(contact.getValue());			
 		}
 		
+	}
+	public void editContact(String fullName) {
+		Scanner sc = new Scanner(System.in);
+		boolean flag=true;
+		for(Map.Entry<String, Contacts> contact : addressBook.entrySet()) {
+			if(fullName.toUpperCase().equals((contact.getKey()).toUpperCase())) {
+				System.out.println("Choose What to EDIT : ");
+				System.out.println("1. Address");
+				System.out.println("2. City");
+				System.out.println("3. State");
+				System.out.println("4. Zip");
+				System.out.println("5. Phone Number");
+				System.out.println("6. Email");
+				int choice=sc.nextInt();
+				switch (choice) {
+				case 1:
+					contact.getValue().setAddress(sc.next());
+					break;
+				case 2:
+					contact.getValue().setCity(sc.next());
+					break;
+				case 3:
+					contact.getValue().setState(sc.next());
+					break;
+				case 4:
+					contact.getValue().setZip(sc.nextInt());
+					break;
+				case 5:
+					contact.getValue().setPhoneNumber(sc.next());
+					break;
+				case 6:
+					contact.getValue().setEmail(sc.next());
+					break;
+				default:
+					System.out.println("INVALID choice");
+				}
+				flag=false;
+				break;
+			}
+		}
+		if(flag)
+			System.out.println("Contact doesn't Exist");
+		sc.close();		
 	}
 
 	public Contacts createContact() {
@@ -47,15 +90,24 @@ public class AddressBookMain {
 
 		Scanner sc = new Scanner(System.in);
 		AddressBookMain addressBookObject = new AddressBookMain();
-		System.out.println("Create and Add Contact : ");
-		String choice = sc.next();
+		Contacts defaultContact=new Contacts("Aditya", "Verma", "3/40 LDA Colony", "Lucknow", "UP", 224045, "8889036440", "addressbook@capgemini.com");
+		addressBookObject.addContactToAddressBook(defaultContact);
+		
+		System.out.println("1. Create and Add Contact");
+		System.out.println("2. Edit Contact");
+		System.out.println("Enter your choice : ");
+		int choice = sc.nextInt();
+		
 		switch (choice) {
-		case "Y":
+		case 1:
 			Contacts newContact = addressBookObject.createContact();
 			addressBookObject.addContactToAddressBook(newContact);
 			break;
-		case "N":
-			System.out.println("Aborting Operation");
+		case 2:
+			System.out.println("Enter the Full Name : ");
+			sc.nextLine();
+			String fullName=sc.nextLine();
+			addressBookObject.editContact(fullName);
 			break;
 		default:
 			System.out.println("Invalid Choice");
