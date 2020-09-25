@@ -62,6 +62,19 @@ public class AddressBookMain {
 			System.out.println("Contact doesn't Exist");
 		sc.close();		
 	}
+	public void deleteContact(String name) {
+		boolean flag=true;
+		for(Map.Entry<String, Contacts> contact : addressBook.entrySet()) {
+			if(name.toUpperCase().equals((contact.getKey()).toUpperCase())) {
+				addressBook.remove(contact.getKey());
+				flag=false;
+			}
+			if(flag)
+				System.out.println("Contact doesn't Exist");
+			else
+				System.out.println("Contact Deleted");				
+		}		
+	}
 
 	public Contacts createContact() {
 		Scanner sc = new Scanner(System.in);
@@ -95,6 +108,7 @@ public class AddressBookMain {
 		
 		System.out.println("1. Create and Add Contact");
 		System.out.println("2. Edit Contact");
+		System.out.println("3. Delete Contact");
 		System.out.println("Enter your choice : ");
 		int choice = sc.nextInt();
 		
@@ -109,9 +123,16 @@ public class AddressBookMain {
 			String fullName=sc.nextLine();
 			addressBookObject.editContact(fullName);
 			break;
+		case 3:
+			System.out.println("Enter the Full Name : ");
+			sc.nextLine();
+			String name=sc.nextLine();
+			addressBookObject.deleteContact(name);
+			break;
 		default:
 			System.out.println("Invalid Choice");
 		}
+		System.out.println("ADDRESS BOOK : ");
 		addressBookObject.displayAddressBook();
 
 		sc.close();
