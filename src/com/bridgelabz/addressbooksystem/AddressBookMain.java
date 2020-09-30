@@ -10,8 +10,13 @@ import java.util.Scanner;
 public class AddressBookMain {
 
 	private Map<String, AddressBook> addressBookDictionary;
+	
 	private Map<String, HashSet<String>> allContactsByCity;
 	private Map<String, HashSet<String>> allContactsByState;
+	
+	private Map<String, Integer> countContactsByCity;
+	private Map<String, Integer> countContactsByState;
+	
 	public HashSet<String> cityList = new HashSet<String>();
 	public HashSet<String> stateList = new HashSet<String>();
 
@@ -19,6 +24,8 @@ public class AddressBookMain {
 		addressBookDictionary = new HashMap<String, AddressBook>();	
 		allContactsByCity=new HashMap<String, HashSet<String>>();
 		allContactsByState=new HashMap<String, HashSet<String>>();
+		countContactsByCity=new HashMap<String, Integer>();
+		countContactsByState=new HashMap<String, Integer>();
 	}
 	public void getAllCities(){
 		for(Map.Entry<String, AddressBook> cityInteratorObject : addressBookDictionary.entrySet()) {
@@ -114,9 +121,11 @@ public class AddressBookMain {
 			case 5:
 				System.out.println("1.Show by City");
 				System.out.println("2.Show by State");
+				System.out.println("3.Show Count by City");
+				System.out.println("4.Show Count by State");
 				System.out.println("Enter your choice :");
 				int showPersonChoice=sc.nextInt();
-				if(showPersonChoice==1) {
+				if(showPersonChoice==1 || showPersonChoice==3) {
 					dictionaryObject.getAllCities();
 					for(String city : dictionaryObject.cityList) {
 						String key=city;
@@ -125,10 +134,14 @@ public class AddressBookMain {
 							value.addAll(dictionaryInteratorObject.getValue().searchContactByCity(key));
 						}
 						dictionaryObject.allContactsByCity.put(key,value);
+						dictionaryObject.countContactsByCity.put(key, value.size());
 					}
-					System.out.println(dictionaryObject.allContactsByCity);
+					if(showPersonChoice==1)
+						System.out.println(dictionaryObject.allContactsByCity);
+					else
+						System.out.println(dictionaryObject.countContactsByCity);
 				}
-				else if(showPersonChoice==2) {
+				else if(showPersonChoice==2 || showPersonChoice==4) {
 					dictionaryObject.getAllStates();
 					for(String state : dictionaryObject.stateList) {
 						String key=state;
@@ -137,8 +150,12 @@ public class AddressBookMain {
 							value.addAll(dictionaryInteratorObject.getValue().searchContactByState(state));
 						}
 						dictionaryObject.allContactsByState.put(key,value);
+						dictionaryObject.countContactsByState.put(key, value.size());
 					}
-					System.out.println(dictionaryObject.allContactsByState);
+					if(showPersonChoice==2)
+						System.out.println(dictionaryObject.allContactsByState);
+					else 						
+						System.out.println(dictionaryObject.countContactsByState);
 				}
 				else {
 					System.out.println("Invalid choice! Can't display Person");
