@@ -8,6 +8,12 @@ public class AddressBook {
 	private ArrayList<Contacts> addressBook = new ArrayList<Contacts>();
 
 	public void addContactToAddressBook(Contacts contact) {
+		for(Contacts person : addressBook) {
+			if(contact.equals(person)) {
+				System.out.println("Duplicate Contact! Enter a new Contact or Edit exixting Contact");
+				return;
+			}
+		}
 		addressBook.add(contact);
 	}
 
@@ -103,9 +109,7 @@ public class AddressBook {
 		String phoneNumber = sc.next();
 		System.out.println("Enter email address:");
 		String email = sc.next();
-		Contacts newContact = new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email);
-
-		return newContact;
+		return (new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email));		
 	}
 
 	public void addressBookOperations() {
@@ -127,8 +131,7 @@ public class AddressBook {
 
 			switch (choice) {
 			case 1:
-				Contacts newContact = createContact();
-				addContactToAddressBook(newContact);
+				addContactToAddressBook(createContact());
 				break;
 			case 2:
 				System.out.println("Enter the Full Name : ");

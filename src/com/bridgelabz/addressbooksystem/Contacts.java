@@ -114,6 +114,16 @@ public class Contacts {
         		"Email : "+ email);
     }
 	
+	@Override
+	public boolean equals(Object o) {
+		if(o==this)
+			return true;
+		if(!(o instanceof Contacts))
+			return false;
+		Contacts person=(Contacts)o;
+		return firstName.equals(person.firstName) && lastName.equals(person.lastName);
+	}
+	
 	
 	
 
