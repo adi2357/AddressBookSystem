@@ -14,7 +14,7 @@ public class AddressBookMain {
 	private Map<String, AddressBook> addressBookDictionary;
 
 	public AddressBookMain() {
-		addressBookDictionary = new HashMap<String, AddressBook>();
+		addressBookDictionary = new HashMap<String, AddressBook>();		
 	}
 
 
@@ -28,7 +28,8 @@ public class AddressBookMain {
 			System.out.println("2. Select AddressBook");
 			System.out.println("3. Delete AddressBook");
 			System.out.println("4. Display AddressBook");
-			System.out.println("5. Exit");
+			System.out.println("5. Display Person");
+			System.out.println("6. Exit");
 			System.out.println("Enter your choice : ");
 			int choice = sc.nextInt();
 
@@ -96,6 +97,30 @@ public class AddressBookMain {
 				}				
 				break;
 			case 5:
+				System.out.println("1.Show by City");
+				System.out.println("2.Show by State");
+				System.out.println("Enter your choice :");
+				int showPersonChoice=sc.nextInt();
+				if(showPersonChoice==1) {
+					System.out.println("Enter City : ");
+					String city=sc.next();
+					for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
+						dictionaryInteratorObject.getValue().searchContactByCity(city);
+					}
+				}
+				else if(showPersonChoice==2) {
+					System.out.println("Enter State : ");
+					sc.nextLine();
+					String state=sc.nextLine();
+					for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
+						dictionaryInteratorObject.getValue().searchContactByState(state);
+					}
+				}
+				else {
+					System.out.println("Invalid choice! Can't display Person");
+				}
+				break;
+			case 6:
 				operation = false;
 				break;
 			default:

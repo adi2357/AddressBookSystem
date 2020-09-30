@@ -111,14 +111,36 @@ public class AddressBook {
 		String email = sc.next();
 		return (new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email));		
 	}
+	
+	public void searchContactByCity(String city) {
+		
+		for (Contacts contact : addressBook) {
+			if (city.toUpperCase().equals((contact.getCity()).toUpperCase())) {
+				System.out.println(contact.getFullName());
+			}
+		}
+	}
+	public void searchContactByState(String state) {
+		for (Contacts contact : addressBook) {
+			if (state.toUpperCase().equals((contact.getState()).toUpperCase())) {
+				System.out.println(contact.getFullName());
+			}
+		}			
+	}
 
 	public void addressBookOperations() {
 		
 		
 		Scanner sc = new Scanner(System.in);
-		Contacts defaultContact = new Contacts("Aditya", "Verma", "3/40 LDA Colony", "Lucknow", "UP", 224045,
-				"8889036440", "addressbook@capgemini.com");
-		addContactToAddressBook(defaultContact);
+		
+		//Default Contacts Entry
+		Contacts defaultContact1 = new Contacts("Aditya", "Verma", "3/40 LDA Colony", "Lucknow", "UP", 224045,"8889036440", "addressbook1@capgemini.com");
+		addContactToAddressBook(defaultContact1);
+		Contacts defaultContact2 = new Contacts("Amit", "Sharma", "4/11 Gomti Nagar", "Lucknow", "UP", 225058,"8846576440", "addressbook2@capgemini.com");
+		addContactToAddressBook(defaultContact2);
+		Contacts defaultContact3 = new Contacts("Ashok", "Kumar", "8/22 Kalyan Nagar", "Kanpur", "UP", 289558,"8123476440", "addressbook3@capgemini.com");
+		addContactToAddressBook(defaultContact3);
+		
 		boolean operate = true;
 		while (operate) {
 			System.out.println("1. Create and Add Contact");
