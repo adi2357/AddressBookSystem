@@ -1,11 +1,18 @@
 package com.bridgelabz.addressbooksystem;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 public class AddressBook {
 	private ArrayList<Contacts> addressBook = new ArrayList<Contacts>();
+	private  HashSet<String> contactsByCity = new HashSet<String>();
+	private  HashSet<String> contactsByState =new HashSet<String>();
+	private  ArrayList<String> city=new ArrayList<String>();
+	private  ArrayList<String> state=new ArrayList<String>();
 
 	public void addContactToAddressBook(Contacts contact) {
 		for(Contacts person : addressBook) {
@@ -112,20 +119,23 @@ public class AddressBook {
 		return (new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email));		
 	}
 	
-	public void searchContactByCity(String city) {
-		
+	public HashSet<String> searchContactByCity(String city) {
+		contactsByCity.clear();
 		for (Contacts contact : addressBook) {
 			if (city.toUpperCase().equals((contact.getCity()).toUpperCase())) {
-				System.out.println(contact.getFullName());
+				contactsByCity.add(contact.getFullName());
 			}
 		}
+		return contactsByCity;
 	}
-	public void searchContactByState(String state) {
+	public HashSet<String> searchContactByState(String state) {
+		contactsByState.clear();
 		for (Contacts contact : addressBook) {
 			if (state.toUpperCase().equals((contact.getState()).toUpperCase())) {
-				System.out.println(contact.getFullName());
+				contactsByState.add(contact.getFullName());
 			}
-		}			
+		}
+		return contactsByState;
 	}
 
 	public void addressBookOperations() {
@@ -177,6 +187,19 @@ public class AddressBook {
 				System.out.println("Invalid Choice");
 			}
 		}
+	}
+
+	public ArrayList<String> getCities() {
+		for (Contacts contact : addressBook) {
+			city.add(contact.getCity());			
+		}
+		return city;
+	}
+	public ArrayList<String> getStates() {
+		for (Contacts contact : addressBook) {
+			state.add(contact.getState());			
+		}
+		return state;
 	}
 
 }

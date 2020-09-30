@@ -1,23 +1,38 @@
 package com.bridgelabz.addressbooksystem;
 
-import java.util.TreeMap;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Hashtable;
-import java.util.TreeMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class AddressBookMain {
 
 	private Map<String, AddressBook> addressBookDictionary;
+	private Map<String, HashSet<String>> allContactsByCity;
+	private Map<String, HashSet<String>> allContactsByState;
+	public HashSet<String> cityList = new HashSet<String>();
+	public HashSet<String> stateList = new HashSet<String>();
 
 	public AddressBookMain() {
-		addressBookDictionary = new HashMap<String, AddressBook>();		
+		addressBookDictionary = new HashMap<String, AddressBook>();	
+		allContactsByCity=new HashMap<String, HashSet<String>>();
+		allContactsByState=new HashMap<String, HashSet<String>>();
 	}
-
-
+	public void getAllCities(){
+		for(Map.Entry<String, AddressBook> cityInteratorObject : addressBookDictionary.entrySet()) {
+			cityList.addAll( cityInteratorObject.getValue().getCities());
+		}		
+	}
+	public void getAllStates(){
+		for(Map.Entry<String, AddressBook> cityInteratorObject : addressBookDictionary.entrySet()) {
+			stateList.addAll( cityInteratorObject.getValue().getStates());
+		}		
+	}
+	
+	
+	
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
@@ -102,19 +117,28 @@ public class AddressBookMain {
 				System.out.println("Enter your choice :");
 				int showPersonChoice=sc.nextInt();
 				if(showPersonChoice==1) {
-					System.out.println("Enter City : ");
-					String city=sc.next();
-					for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
-						dictionaryInteratorObject.getValue().searchContactByCity(city);
+					dictionaryObject.getAllCities();
+					for(String city : dictionaryObject.cityList) {
+						String key=city;
+						HashSet<String> value=new HashSet<String>();
+						for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {							
+							value.addAll(dictionaryInteratorObject.getValue().searchContactByCity(key));
+						}
+						dictionaryObject.allContactsByCity.put(key,value);
 					}
+					System.out.println(dictionaryObject.allContactsByCity);
 				}
 				else if(showPersonChoice==2) {
-					System.out.println("Enter State : ");
-					sc.nextLine();
-					String state=sc.nextLine();
-					for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
-						dictionaryInteratorObject.getValue().searchContactByState(state);
+					dictionaryObject.getAllStates();
+					for(String state : dictionaryObject.stateList) {
+						String key=state;
+						HashSet<String> value=new HashSet<String>();
+						for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
+							value.addAll(dictionaryInteratorObject.getValue().searchContactByState(state));
+						}
+						dictionaryObject.allContactsByState.put(key,value);
 					}
+					System.out.println(dictionaryObject.allContactsByState);
 				}
 				else {
 					System.out.println("Invalid choice! Can't display Person");
