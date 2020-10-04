@@ -170,7 +170,23 @@ public class AddressBook {
 				deleteContact(name);
 				break;
 			case 4:
-				sortByPerson();
+				System.out.println("Sort by :");
+				System.out.println("1.Person");
+				System.out.println("2.City ");
+				System.out.println("3.State");
+				System.out.println("4.Zip");
+				System.out.println("Enter your choice : ");
+				int sortChoice = sc.nextInt();
+				if (sortChoice==1)
+					sortByPerson();
+				else if(sortChoice==2)
+					sortByCity();
+				else if(sortChoice==3)
+					sortByState();
+				else if(sortChoice==4)
+					sortByZip();
+				else
+					System.out.println("Invalid parameter for sorting selected!");
 				break;
 			case 5:
 				displayAddressBook();
@@ -184,9 +200,22 @@ public class AddressBook {
 		}
 	}
 	
+//	SORTING
 	public void sortByPerson() {
 		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getFullName)).collect(Collectors.toList());
 		System.out.println("Address Book sorted by Person Name");
+		}	
+	public void sortByCity() {
+		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getCity)).collect(Collectors.toList());
+		System.out.println("Address Book sorted by City");
+		}	
+	public void sortByState() {
+		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getState)).collect(Collectors.toList());
+		System.out.println("Address Book sorted by State");
+		}	
+	public void sortByZip() {
+		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getZip)).collect(Collectors.toList());
+		System.out.println("Address Book sorted by Zip");
 		}
 	
 	public ArrayList<String> getCities() {
