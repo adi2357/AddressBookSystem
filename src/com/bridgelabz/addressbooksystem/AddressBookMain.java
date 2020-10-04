@@ -65,8 +65,8 @@ public class AddressBookMain {
 				String addressBookNameToOperate = sc.nextLine();
 				AddressBook addressBookObjectForOperations = dictionaryObject.addressBookDictionary.get(addressBookNameToOperate);
 				try {
-					addressBookObjectForOperations.addressBookOperations();
-					System.out.println("Entered Address Book -> "+addressBookNameToOperate);
+					addressBookObjectForOperations.addressBookOperations(addressBookNameToOperate);
+					System.out.println("Exited Address Book -> "+addressBookNameToOperate);
 				} catch (NullPointerException e1) {
 					System.out.println("Address Book -> " + addressBookNameToOperate + " doesn't exist in the Dictionary");
 				}
