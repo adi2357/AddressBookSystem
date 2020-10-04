@@ -28,14 +28,10 @@ public class AddressBookMain {
 		countContactsByState=new HashMap<String, Integer>();
 	}
 	public void getAllCities(){
-		for(Map.Entry<String, AddressBook> cityInteratorObject : addressBookDictionary.entrySet()) {
-			cityList.addAll( cityInteratorObject.getValue().getCities());
-		}		
+		addressBookDictionary.entrySet().stream().forEach(n -> {cityList.addAll(n.getValue().getCities());});		
 	}
 	public void getAllStates(){
-		for(Map.Entry<String, AddressBook> cityInteratorObject : addressBookDictionary.entrySet()) {
-			stateList.addAll( cityInteratorObject.getValue().getStates());
-		}		
+		addressBookDictionary.entrySet().stream().forEach(n -> {stateList.addAll(n.getValue().getStates());});	
 	}
 	
 	
@@ -130,11 +126,10 @@ public class AddressBookMain {
 					for(String city : dictionaryObject.cityList) {
 						String key=city;
 						HashSet<String> value=new HashSet<String>();
-						for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {							
-							value.addAll(dictionaryInteratorObject.getValue().searchContactByCity(key));
-						}
+						dictionaryObject.addressBookDictionary.entrySet()
+											 				  .forEach(addressBookIterator ->{value.addAll(addressBookIterator.getValue().searchContactByCity(key));});
 						dictionaryObject.allContactsByCity.put(key,value);
-						dictionaryObject.countContactsByCity.put(key, value.size());
+						dictionaryObject.countContactsByCity.put(key,value.size());
 					}
 					if(showPersonChoice==1)
 						System.out.println(dictionaryObject.allContactsByCity);
@@ -146,9 +141,8 @@ public class AddressBookMain {
 					for(String state : dictionaryObject.stateList) {
 						String key=state;
 						HashSet<String> value=new HashSet<String>();
-						for(Map.Entry<String, AddressBook> dictionaryInteratorObject : dictionaryObject.addressBookDictionary.entrySet()) {
-							value.addAll(dictionaryInteratorObject.getValue().searchContactByState(state));
-						}
+						dictionaryObject.addressBookDictionary.entrySet()
+		 													  .forEach(addressBookIterator ->{value.addAll(addressBookIterator.getValue().searchContactByState(key));});
 						dictionaryObject.allContactsByState.put(key,value);
 						dictionaryObject.countContactsByState.put(key, value.size());
 					}

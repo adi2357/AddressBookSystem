@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class AddressBook {
 	private ArrayList<Contacts> addressBook = new ArrayList<Contacts>();
@@ -15,19 +16,15 @@ public class AddressBook {
 	private  ArrayList<String> state=new ArrayList<String>();
 
 	public void addContactToAddressBook(Contacts contact) {
-		for(Contacts person : addressBook) {
-			if(contact.equals(person)) {
-				System.out.println("Duplicate Contact! Enter a new Contact or Edit exixting Contact");
-				return;
-			}
-		}
+		Predicate<Contacts> isPresent=n -> {return n.equals(contact);};
+		if(!addressBook.stream().anyMatch(isPresent))
 		addressBook.add(contact);
+		else 
+			System.out.println("Duplicate Contact! Enter a new Contact or Edit exixting Contact");
 	}
 
 	public void displayAddressBook() {
-		for (Contacts contact : addressBook) {
-			System.out.println(contact);
-		}
+		addressBook.stream().forEach(n ->{System.out.println(n);} );
 	}
 
 	public void editContact(String fullName) {
@@ -121,20 +118,12 @@ public class AddressBook {
 	
 	public HashSet<String> searchContactByCity(String city) {
 		contactsByCity.clear();
-		for (Contacts contact : addressBook) {
-			if (city.toUpperCase().equals((contact.getCity()).toUpperCase())) {
-				contactsByCity.add(contact.getFullName());
-			}
-		}
+		addressBook.stream().filter(contact -> city.equalsIgnoreCase(contact.getCity())).forEach(contact -> contactsByCity.add(contact.getFullName()));		
 		return contactsByCity;
 	}
 	public HashSet<String> searchContactByState(String state) {
 		contactsByState.clear();
-		for (Contacts contact : addressBook) {
-			if (state.toUpperCase().equals((contact.getState()).toUpperCase())) {
-				contactsByState.add(contact.getFullName());
-			}
-		}
+		addressBook.stream().filter(contact -> state.equalsIgnoreCase(contact.getState())).forEach(contact -> contactsByState.add(contact.getFullName()));
 		return contactsByState;
 	}
 
@@ -190,15 +179,11 @@ public class AddressBook {
 	}
 
 	public ArrayList<String> getCities() {
-		for (Contacts contact : addressBook) {
-			city.add(contact.getCity());			
-		}
+		addressBook.stream().forEach(contact -> {city.add(contact.getCity());});		
 		return city;
 	}
 	public ArrayList<String> getStates() {
-		for (Contacts contact : addressBook) {
-			state.add(contact.getState());			
-		}
+		addressBook.stream().forEach(contact -> {state.add(contact.getState());});
 		return state;
 	}
 
