@@ -1,5 +1,7 @@
 package com.bridgelabz.addressbooksystem;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -11,23 +13,44 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class AddressBook {
-	private List<Contacts> addressBook = new ArrayList<Contacts>();
-	private  HashSet<String> contactsByCity = new HashSet<String>();
-	private  HashSet<String> contactsByState =new HashSet<String>();
-	private  ArrayList<String> city=new ArrayList<String>();
-	private  ArrayList<String> state=new ArrayList<String>();
+	public static final String ADRESS_BOOK_FILES = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\AddressBookSystem\\AddressBookFiles";
+	private List<Contacts> addressBook;
+	private HashSet<String> contactsByCity;
+	private HashSet<String> contactsByState;
+	private ArrayList<String> city;
+	private ArrayList<String> state;
 	
 	
+
+	public enum IOservice {
+		CONSOLE_IO, FILE_IO
+	}
+
+	public AddressBook() {
+		this.addressBook = new ArrayList<Contacts>();
+		this.contactsByCity = new HashSet<String>();
+		this.contactsByState = new HashSet<String>();
+		this.city = new ArrayList<String>();
+		this.state = new ArrayList<String>();
+	}
+
+	public AddressBook(List<Contacts> addressBook) {
+		this.addressBook = addressBook;
+	}
+
 	public void addContactToAddressBook(Contacts contact) {
-		Predicate<Contacts> isPresent=n -> {return n.equals(contact);};
-		if(!addressBook.stream().anyMatch(isPresent))
-		addressBook.add(contact);
-		else 
+		Predicate<Contacts> isPresent = n -> {
+			return n.equals(contact);
+		};
+		if (!addressBook.stream().anyMatch(isPresent))
+			addressBook.add(contact);
+		else
 			System.out.println("Duplicate Contact! Enter a new Contact or Edit exixting Contact");
 	}
 
 	public void displayAddressBook() {
-		addressBook.stream().forEach(n ->System.out.println(n.toString()));
+		addressBook.stream().forEach(n -> System.out.println(n.toString()));
+
 	}
 
 	public void editContact(String fullName) {
@@ -116,46 +139,50 @@ public class AddressBook {
 		String phoneNumber = sc.next();
 		System.out.println("Enter email address:");
 		String email = sc.next();
-		return (new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email));		
+		return (new Contacts(firstName, lastName, address, city, state, zip, phoneNumber, email));
 	}
-	
+
 	public HashSet<String> searchContactByCity(String city) {
 		contactsByCity.clear();
-		addressBook.stream().filter(contact -> city.equalsIgnoreCase(contact.getCity())).forEach(contact -> contactsByCity.add(contact.getFullName()));		
+		addressBook.stream().filter(contact -> city.equalsIgnoreCase(contact.getCity()))
+				.forEach(contact -> contactsByCity.add(contact.getFullName()));
 		return contactsByCity;
 	}
+
 	public HashSet<String> searchContactByState(String state) {
 		contactsByState.clear();
-		addressBook.stream().filter(contact -> state.equalsIgnoreCase(contact.getState())).forEach(contact -> contactsByState.add(contact.getFullName()));
+		addressBook.stream().filter(contact -> state.equalsIgnoreCase(contact.getState()))
+				.forEach(contact -> contactsByState.add(contact.getFullName()));
 		return contactsByState;
 	}
 
-	public void addressBookOperations(String addressBookNameToOperate) {		
-		
+	public void addressBookOperations(String addressBookNameToOperate) {
+		Path addressBookFilePath = Paths.get(ADRESS_BOOK_FILES + "/" + addressBookNameToOperate + ".txt");
 		Scanner sc = new Scanner(System.in);
-		System.out.println("Entered Address Book -> "+addressBookNameToOperate);
-		//Default Contacts Entry
-		Contacts defaultContact1 = new Contacts("Aditya", "Verma", "3/40 LDA Colony", "Lucknow", "UP", 224045,"8889036440", "addressbook1@capgemini.com");
-		addContactToAddressBook(defaultContact1);
-		Contacts defaultContact2 = new Contacts("Amit", "Sharma", "4/11 Gomti Nagar", "Lucknow", "UP", 225058,"8846576440", "addressbook2@capgemini.com");
-		addContactToAddressBook(defaultContact2);
-		Contacts defaultContact3 = new Contacts("Ashok", "Kumar", "8/22 Kalyan Nagar", "Kanpur", "UP", 289558,"8123476440", "addressbook3@capgemini.com");
-		addContactToAddressBook(defaultContact3);
+		System.out.println("Entered Address Book -> " + addressBookNameToOperate);
 		
 		boolean operate = true;
 		while (operate) {
-			System.out.println("1. Create and Add Contact");
+			System.out.println("1. Read Contact");
 			System.out.println("2. Edit Contact");
 			System.out.println("3. Delete Contact");
 			System.out.println("4. Sort Address Book");
-			System.out.println("5. Display Address Book");
+			System.out.println("5. Write Address Book");
 			System.out.println("6. Exit");
 			System.out.println("Enter your choice : ");
 			int choice = sc.nextInt();
 
 			switch (choice) {
 			case 1:
-				addContactToAddressBook(createContact());
+				System.out.println("Enter IO Service : \n1.CONSOLE_IO\n2.FILE_IO");
+				int ioChoice = sc.nextInt();
+				if (ioChoice == 1)
+					addContactToAddressBook(createContact());
+				else if (ioChoice == 2) {
+					AddressBookFileIOService fileReadObject = new AddressBookFileIOService(addressBookFilePath);
+					addressBook = fileReadObject.readData();
+				} else
+					System.out.println("Invalid IO choice selected");
 				break;
 			case 2:
 				System.out.println("Enter the Full Name : ");
@@ -177,19 +204,27 @@ public class AddressBook {
 				System.out.println("4.Zip");
 				System.out.println("Enter your choice : ");
 				int sortChoice = sc.nextInt();
-				if (sortChoice==1)
+				if (sortChoice == 1)
 					sortByPerson();
-				else if(sortChoice==2)
+				else if (sortChoice == 2)
 					sortByCity();
-				else if(sortChoice==3)
+				else if (sortChoice == 3)
 					sortByState();
-				else if(sortChoice==4)
+				else if (sortChoice == 4)
 					sortByZip();
 				else
 					System.out.println("Invalid parameter for sorting selected!");
 				break;
 			case 5:
-				displayAddressBook();
+				System.out.println("Enter IO Service : \n1.CONSOLE_IO\n2.FILE_IO");
+				int choiceOfIO = sc.nextInt();
+				if (choiceOfIO == 1)
+					displayAddressBook();
+				else if (choiceOfIO == 2) {
+					AddressBookFileIOService fileWriteObject = new AddressBookFileIOService(addressBookFilePath);
+					fileWriteObject.writeData(addressBook);
+				} else
+					System.out.println("Invalid IO choice");
 				break;
 			case 6:
 				operate = false;
@@ -199,31 +234,43 @@ public class AddressBook {
 			}
 		}
 	}
-	
+
 //	SORTING
 	public void sortByPerson() {
-		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getFullName)).collect(Collectors.toList());
+		addressBook = addressBook = addressBook.stream().sorted(Comparator.comparing(Contacts::getFullName))
+				.collect(Collectors.toList());
 		System.out.println("Address Book sorted by Person Name");
-		}	
+	}
+
 	public void sortByCity() {
-		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getCity)).collect(Collectors.toList());
+		addressBook = addressBook = addressBook.stream().sorted(Comparator.comparing(Contacts::getCity))
+				.collect(Collectors.toList());
 		System.out.println("Address Book sorted by City");
-		}	
+	}
+
 	public void sortByState() {
-		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getState)).collect(Collectors.toList());
+		addressBook = addressBook = addressBook.stream().sorted(Comparator.comparing(Contacts::getState))
+				.collect(Collectors.toList());
 		System.out.println("Address Book sorted by State");
-		}	
+	}
+
 	public void sortByZip() {
-		addressBook=addressBook=addressBook.stream().sorted(Comparator.comparing(Contacts::getZip)).collect(Collectors.toList());
+		addressBook = addressBook = addressBook.stream().sorted(Comparator.comparing(Contacts::getZip))
+				.collect(Collectors.toList());
 		System.out.println("Address Book sorted by Zip");
-		}
-	
+	}
+
 	public ArrayList<String> getCities() {
-		addressBook.stream().forEach(contact -> {city.add(contact.getCity());});		
+		addressBook.stream().forEach(contact -> {
+			city.add(contact.getCity());
+		});
 		return city;
 	}
+
 	public ArrayList<String> getStates() {
-		addressBook.stream().forEach(contact -> {state.add(contact.getState());});
+		addressBook.stream().forEach(contact -> {
+			state.add(contact.getState());
+		});
 		return state;
 	}
 

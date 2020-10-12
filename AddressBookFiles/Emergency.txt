@@ -1,0 +1,3 @@
+Name : Aditya Verma	Address : 3/40 LDA Colony	City : Lucknow	State : UP	Zip : 224045	Phone Number : 8889036440	Email : addressbook1@capgemini.com
+Name : Amit Sharma	Address : 4/11 Gomti Nagar	City : Lucknow	State : UP	Zip : 225058	Phone Number : 8846576440	Email : addressbook2@capgemini.com
+Name : Ashok Kumar	Address : 8/22 Kalyan Nagar	City : Kanpur	State : UP	Zip : 289558	Phone Number : 8123476440	Email : addressbook3@capgemini.com
