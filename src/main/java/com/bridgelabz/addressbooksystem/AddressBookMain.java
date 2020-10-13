@@ -14,10 +14,12 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 public class AddressBookMain {
-	
+
 	public static final Scanner SCANNER = new Scanner(System.in);
 	public static final String ADRESS_BOOK_FILES = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\AddressBookSystem\\AddressBookFiles";
 	public static final String CSV_FILES = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\AddressBookSystem\\CSVFiles";
+	public static final String JSON_FILES = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\AddressBookSystem\\JSONFiles";
+
 	private Map<String, AddressBook> addressBookDictionary;
 
 	private Map<String, HashSet<String>> allContactsByCity;
@@ -30,20 +32,21 @@ public class AddressBookMain {
 	public HashSet<String> stateList = new HashSet<String>();
 
 	public AddressBookMain() {
-		initializeDictionary();		
+		initializeDictionary();
 		allContactsByCity = new HashMap<String, HashSet<String>>();
 		allContactsByState = new HashMap<String, HashSet<String>>();
 		countContactsByCity = new HashMap<String, Integer>();
 		countContactsByState = new HashMap<String, Integer>();
 	}
-	
+
 	public void initializeDictionary() {
 		this.addressBookDictionary = new HashMap<String, AddressBook>();
 		Path dictionaryPath = Paths.get(ADRESS_BOOK_FILES);
-		File[] addressBookFiles=dictionaryPath.toFile().listFiles();
-		for(File file:addressBookFiles) {
-			AddressBookFileIOService fileReadObject=new AddressBookFileIOService(file.toPath());
-			this.addressBookDictionary.put(file.getName().replaceFirst("[.][^.]+$", ""), new AddressBook(fileReadObject.readData()));
+		File[] addressBookFiles = dictionaryPath.toFile().listFiles();
+		for (File file : addressBookFiles) {
+			AddressBookFileIOService fileReadObject = new AddressBookFileIOService(file.toPath());
+			this.addressBookDictionary.put(file.getName().replaceFirst("[.][^.]+$", ""),
+					new AddressBook(fileReadObject.readData()));
 		}
 	}
 
@@ -59,10 +62,12 @@ public class AddressBookMain {
 		});
 	}
 
-	public static void main(String[] args) throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException, IOException {
+	public static void main(String[] args)
+			throws CsvDataTypeMismatchException, CsvRequiredFieldEmptyException, IOException {
 
 		Path addressBookPath = Paths.get(ADRESS_BOOK_FILES);
-		Path csvPath=Paths.get(CSV_FILES);
+		Path csvPath = Paths.get(CSV_FILES);
+		Path jsonPath=Paths.get(JSON_FILES);
 		AddressBookMain dictionaryObject = new AddressBookMain();
 		boolean operation = true;
 		while (operation) {
@@ -80,16 +85,19 @@ public class AddressBookMain {
 				System.out.println("Enter name of Address Book: ");
 				SCANNER.nextLine();
 				String addressBookName = SCANNER.nextLine();
-				
+
 				AddressBook addressBookObjectForCreation = new AddressBook();
 				dictionaryObject.addressBookDictionary.put(addressBookName, addressBookObjectForCreation);
 
 				Path newBookPath = Paths.get(addressBookPath + "/" + addressBookName + ".txt");
-				Path newCsvFilePath=Paths.get(csvPath+ "/" + addressBookName + ".csv");
+				Path newCsvFilePath = Paths.get(csvPath + "/" + addressBookName + ".csv");
+				Path newJsonFilePath=Paths.get(jsonPath + "/" + addressBookName + ".json");
 				try {
 					Files.createFile(newBookPath);
 					Files.createFile(newCsvFilePath);
-				} catch (IOException e) {}
+					Files.createFile(newJsonFilePath);
+				} catch (IOException e) {
+				}
 
 				break;
 			case 2:
@@ -114,7 +122,7 @@ public class AddressBookMain {
 				if (dictionaryObject.addressBookDictionary.containsKey(addressBooknameForDeletion)) {
 					dictionaryObject.addressBookDictionary.remove(addressBooknameForDeletion);
 					Path bookPath = Paths.get(addressBookPath + "/" + addressBooknameForDeletion + ".txt");
-					File file=bookPath.toFile();
+					File file = bookPath.toFile();
 					file.delete();
 					System.out.println("Address Book Deleted");
 					System.out.println();
