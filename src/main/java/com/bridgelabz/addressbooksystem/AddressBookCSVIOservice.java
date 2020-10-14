@@ -5,6 +5,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBean;
@@ -32,13 +34,17 @@ public class AddressBookCSVIOservice {
 	}
 
 	public List<Contacts> readDataFromCSVFile() throws IOException {
-		
+
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			CsvToBeanBuilder<Contacts> builder = new CsvToBeanBuilder<Contacts>(reader);
 			CsvToBean<Contacts> csvToBean = builder.withType(Contacts.class).withIgnoreLeadingWhiteSpace(true).build();
-			List<Contacts> addressBook = csvToBean.parse();
+			Iterator<Contacts> csvIterator = csvToBean.iterator();
+			List<Contacts> addressBook = new ArrayList<Contacts>();
+			while (csvIterator.hasNext()) {
+				Contacts contact = csvIterator.next();
+				addressBook.add(contact);
+			}
 			return addressBook;
 		}
 	}
-
 }

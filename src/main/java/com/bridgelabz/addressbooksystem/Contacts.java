@@ -28,8 +28,7 @@ public class Contacts {
 	@CsvBindByName(column = "Email")
 	private String email;
 	
-
-	public Contacts() {		
+	public Contacts() {
 	}
 
 	public Contacts(String firstName, String lastName, String address, String city, String state, String zip,

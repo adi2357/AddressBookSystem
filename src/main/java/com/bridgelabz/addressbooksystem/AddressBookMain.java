@@ -67,7 +67,7 @@ public class AddressBookMain {
 
 		Path addressBookPath = Paths.get(ADRESS_BOOK_FILES);
 		Path csvPath = Paths.get(CSV_FILES);
-		Path jsonPath=Paths.get(JSON_FILES);
+		Path jsonPath = Paths.get(JSON_FILES);
 		AddressBookMain dictionaryObject = new AddressBookMain();
 		boolean operation = true;
 		while (operation) {
@@ -91,7 +91,7 @@ public class AddressBookMain {
 
 				Path newBookPath = Paths.get(addressBookPath + "/" + addressBookName + ".txt");
 				Path newCsvFilePath = Paths.get(csvPath + "/" + addressBookName + ".csv");
-				Path newJsonFilePath=Paths.get(jsonPath + "/" + addressBookName + ".json");
+				Path newJsonFilePath = Paths.get(jsonPath + "/" + addressBookName + ".json");
 				try {
 					Files.createFile(newBookPath);
 					Files.createFile(newCsvFilePath);
