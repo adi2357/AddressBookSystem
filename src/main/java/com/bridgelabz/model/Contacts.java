@@ -1,4 +1,6 @@
-package com.bridgelabz.addressbooksystem;
+package com.bridgelabz.model;
+
+import java.util.List;
 
 import com.opencsv.bean.CsvBindByName;
 
@@ -20,7 +22,7 @@ public class Contacts {
 	private String state;
 	
 	@CsvBindByName(column = "ZIP")
-	private String zip;
+	private int zip;
 	
 	@CsvBindByName(column = "Phone Number")
 	private String phoneNumber;
@@ -28,10 +30,14 @@ public class Contacts {
 	@CsvBindByName(column = "Email")
 	private String email;
 	
+	private List<String> phoneList;
+	
+	private List<AddressBookData> addressBooks;
+	
 	public Contacts() {
 	}
 
-	public Contacts(String firstName, String lastName, String address, String city, String state, String zip,
+	public Contacts(String firstName, String lastName, String address, String city, String state, int zip,
 			String phoneNumber, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -41,6 +47,21 @@ public class Contacts {
 		this.zip = zip;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
+	}
+
+	
+
+	public Contacts(String firstName, String lastName, String address, String city, String state, int zip, String email,
+			List<String> phoneList, List<AddressBookData> addressBooks) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.email = email;
+		this.phoneList = phoneList;
+		this.addressBooks = addressBooks;
 	}
 
 	public String getFirstName() {
@@ -83,11 +104,11 @@ public class Contacts {
 		this.state = state;
 	}
 
-	public String getZip() {
+	public int getZip() {
 		return zip;
 	}
 
-	public void setZip(String zip) {
+	public void setZip(int zip) {
 		this.zip = zip;
 	}
 
@@ -109,6 +130,22 @@ public class Contacts {
 
 	public String getFullName() {
 		return (firstName + " " + lastName);
+	}
+
+	public List<String> getPhoneList() {
+		return phoneList;
+	}
+
+	public void setPhoneList(List<String> phoneList) {
+		this.phoneList = phoneList;
+	}
+
+	public List<AddressBookData> getAddressBooks() {
+		return addressBooks;
+	}
+
+	public void setAddressBooks(List<AddressBookData> addressBooks) {
+		this.addressBooks = addressBooks;
 	}
 
 	@Override

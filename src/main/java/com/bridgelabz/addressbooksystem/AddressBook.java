@@ -11,6 +11,10 @@ import java.util.Scanner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.bridgelabz.ioservice.AddressBookCSVIOservice;
+import com.bridgelabz.ioservice.AddressBookFileIOService;
+import com.bridgelabz.ioservice.AddressBookJSONIOservice;
+import com.bridgelabz.model.Contacts;
 import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
@@ -85,7 +89,7 @@ public class AddressBook {
 					break;
 				case 4:
 					System.out.println("Enter new zip:");
-					contact.setZip(SCANNER.next());
+					contact.setZip(SCANNER.nextInt());
 					break;
 				case 5:
 					System.out.println("Enter new phone number:");
@@ -135,7 +139,7 @@ public class AddressBook {
 		SCANNER.nextLine();
 		String state = SCANNER.nextLine();
 		System.out.println("Enter zip:");
-		String zip = SCANNER.next();
+		int zip = SCANNER.nextInt();
 		System.out.println("Enter phone No.:");
 		String phoneNumber = SCANNER.next();
 		System.out.println("Enter email address:");

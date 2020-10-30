@@ -1,10 +1,12 @@
-package com.bridgelabz.addressbooksystem;
+package com.bridgelabz.ioservice;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.bridgelabz.model.Contacts;
 
 public class AddressBookFileIOService {
 
@@ -39,7 +41,7 @@ public class AddressBookFileIOService {
 				String address = data[2].trim();
 				String city = data[3].trim();
 				String state = data[4].trim();
-				String zip = data[5].trim();
+				int zip = Integer.parseInt(data[5].trim());
 				String phoneNumber = data[6].trim();
 				String email = data[7].trim();
 				Contacts newContact = new Contacts(name[0], name[1], address, city, state, zip, phoneNumber, email);

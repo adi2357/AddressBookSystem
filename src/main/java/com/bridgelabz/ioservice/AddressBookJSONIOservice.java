@@ -1,4 +1,4 @@
-package com.bridgelabz.addressbooksystem;
+package com.bridgelabz.ioservice;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
+import com.bridgelabz.model.Contacts;
 import com.google.gson.Gson;
 
 public class AddressBookJSONIOservice {
