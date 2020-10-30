@@ -42,4 +42,13 @@ public class AddressBookService {
 			}
 		}
 	}
+
+	public void updateContactEmail(String firstName, String lastName, String email) {
+		int result = addressBookDBService.updateContactEmail(firstName, lastName, email);
+		
+	}
+
+	public boolean checkContactDataInSyncWithDB(String firstName, String lastName) {
+		return false;
+	}
 }

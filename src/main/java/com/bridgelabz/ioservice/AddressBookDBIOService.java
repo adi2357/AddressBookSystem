@@ -97,4 +97,8 @@ public class AddressBookDBIOService {
 		}
 		return contactDataList;
 	}
+
+	public int updateContactEmail(String firstName, String lastName, String email) {
+		return 0;
+	}
 }

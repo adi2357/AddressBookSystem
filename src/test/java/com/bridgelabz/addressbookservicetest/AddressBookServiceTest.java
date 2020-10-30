@@ -17,4 +17,17 @@ public class AddressBookServiceTest {
 		Assert.assertEquals(10, countOfEntriesRetrieved);
 	}
 
+	@Test
+	public void givenNewEmailForContact_WhenUpdated_ShouldSyncWithDB() {
+		try {
+			AddressBookService serviceObject = new AddressBookService();
+			serviceObject.readContactData(IOService.DB_IO);
+			serviceObject.updateContactEmail("Aditya", "Verma", "addressbook@capgemini.com");
+			boolean result = serviceObject.checkContactDataInSyncWithDB("Aditya", "Verma");
+			Assert.assertTrue(result);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
