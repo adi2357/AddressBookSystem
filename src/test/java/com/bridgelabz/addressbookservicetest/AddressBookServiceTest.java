@@ -20,7 +20,7 @@ public class AddressBookServiceTest {
 		AddressBookService serviceObject = new AddressBookService();
 		serviceObject.readContactData(IOService.DB_IO);
 		int countOfEntriesRetrieved = serviceObject.sizeOfContactList();
-		Assert.assertEquals(10, countOfEntriesRetrieved);
+		Assert.assertEquals(11, countOfEntriesRetrieved);
 	}
 
 	@Test
@@ -44,7 +44,7 @@ public class AddressBookServiceTest {
 		LocalDate startDate = LocalDate.of(2018, 01, 01);
 		LocalDate endDate = LocalDate.now();
 		List<Contacts> employeePayrollData = serviceObject.readContactsForDateRange(IOService.DB_IO, startDate, endDate);
-		Assert.assertEquals(4, employeePayrollData.size());
+		Assert.assertEquals(5, employeePayrollData.size());
 	}
 
 	@Test

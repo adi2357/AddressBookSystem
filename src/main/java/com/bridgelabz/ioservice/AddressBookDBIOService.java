@@ -183,7 +183,142 @@ public class AddressBookDBIOService {
 
 	public Contacts addContactToAddressBook(String firstName, String lastName, String address, String city,
 			String state, int zip, String email, String phone, String addressBookName, String type) throws DBException {
-		
-		return null;
+		List<String> phoneList = new ArrayList<>();
+		Map<String, String> addressBooks = new HashMap<>();
+		Contacts newContact =null;
+		Connection connection = null;
+		try {
+			connection = this.establishConnection();
+			connection.setAutoCommit(false);
+			System.out.println("Connection is successfull!!! " + connection);
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			String sqlToRetrieveAddressBookNameAndType = 
+					String.format("select address_book.name as address_book_name, address_book.type as type "
+								+ "from address_book "
+								+ "inner join contact_book on contact_book.type = address_book.type "
+								+ "inner join contact on contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
+								+ "where contact.first_name = '%s' and contact.last_name = '%s' ; ", firstName, lastName);
+			ResultSet resultSetToRetrieveAddressBookNameAndType = statement.executeQuery(sqlToRetrieveAddressBookNameAndType);
+			while(resultSetToRetrieveAddressBookNameAndType.next()) {
+				addressBooks.put(resultSetToRetrieveAddressBookNameAndType.getString("address_book_name"), 
+								 resultSetToRetrieveAddressBookNameAndType.getString("type"));
+			}
+			if(!addressBooks.containsKey(type)) {
+				String sqlToInsert = String.format("insert into address_book (name, type) values  ('%s','%s');", addressBookName, type);
+				int addressBookRowsUpdated = statement.executeUpdate(sqlToInsert, statement.RETURN_GENERATED_KEYS);
+				if(addressBookRowsUpdated == 1) {
+					addressBooks.put(addressBookName, type);
+				}
+				System.out.println("Inserted into Address Book");
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			boolean isExists = false;
+			String sqlToRetrieveContactName = 
+					String.format("select first_name, last_name from contact where first_name = '%s' and last_name = '%s';", firstName, lastName);
+			Statement statementToRetrieveContactName = connection.createStatement();
+			ResultSet resultSetToRetrieveContactName = statementToRetrieveContactName.executeQuery(sqlToRetrieveContactName);
+			if(resultSetToRetrieveContactName.next()) {
+				isExists = true;
+			}
+			if(!isExists){
+				String sqlToInsert = String.format(
+						"insert into contact " + "(first_name, last_name, address, city, state, zip, email) values "
+					  + "('%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+						firstName, lastName, address, city, state, zip, email);
+				int contactRowsUpdated = statement.executeUpdate(sqlToInsert);
+				System.out.println("Inserted into Contact");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			String sqlToRetrievePhone = 
+					String.format("select first_name, last_name, phone "
+								+ "from contact_number "
+								+ "where first_name = '%s' and last_name = '%s' ;", firstName, lastName);
+			ResultSet resultSetToRetrievePhone = statement.executeQuery(sqlToRetrievePhone);
+			while(resultSetToRetrievePhone.next()) {
+				phoneList.add(resultSetToRetrievePhone.getString("phone"));
+			}
+			if(!phoneList.contains(phone)) {
+				String sqlToInsert = String.format("insert into contact_number "
+												 + "(first_name, last_name, phone) values ('%s','%s','%s');", firstName, lastName, phone);
+				int contactNumberRowsUpdated = statement.executeUpdate(sqlToInsert, statement.RETURN_GENERATED_KEYS);
+				if(contactNumberRowsUpdated == 1) {
+					phoneList.add(phone);
+				}
+				System.out.println("Inserted into Contact Number");
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			boolean isExists = false;
+			String sqlToRetrieveContactNameAndBookType = 
+					String.format("select first_name, last_name, type "
+							+ "from contact_book "
+							+ "where first_name = '%s' and last_name = '%s' and type = '%s';", firstName, lastName, type);
+			Statement statementToRetrieveContactNameAndBookType = connection.createStatement();
+			ResultSet resultSetRetrieveContactNameAndBookType = statementToRetrieveContactNameAndBookType.executeQuery(sqlToRetrieveContactNameAndBookType);
+			if(resultSetRetrieveContactNameAndBookType.next()) {
+				isExists = true;
+			}
+			if(!isExists){
+				String sqlToInsert = String.format(
+						"insert into contact_book "
+					   +"(type, first_name, last_name) values ('%s', '%s', '%s')", type, firstName, lastName);
+				int contactBookRowsUpdated = statement.executeUpdate(sqlToInsert);
+				if(contactBookRowsUpdated == 1) {
+					newContact = new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks);
+					System.out.println("Inserted into Contact Book");
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+		}
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return newContact;
 	}
 }
