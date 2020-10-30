@@ -101,4 +101,14 @@ public class AddressBookService {
 		}
 		return 0;
 	}
+
+	public void addContactToAddressBook(String firstName, String lastName, String address, String city, String state,
+			int zip, String email, String phone, String addressBookName, String type) {
+		try {
+			this.contactDataList.add(addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, addressBookName, type));
+		}catch (DBException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

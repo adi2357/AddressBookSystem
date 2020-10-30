@@ -180,4 +180,10 @@ public class AddressBookDBIOService {
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
 		}
 	}
+
+	public Contacts addContactToAddressBook(String firstName, String lastName, String address, String city,
+			String state, int zip, String email, String phone, String addressBookName, String type) throws DBException {
+		
+		return null;
+	}
 }

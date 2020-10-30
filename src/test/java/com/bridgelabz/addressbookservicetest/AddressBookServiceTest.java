@@ -1,7 +1,9 @@
 package com.bridgelabz.addressbookservicetest;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -54,5 +56,19 @@ public class AddressBookServiceTest {
 		int countPerState = serviceObject.getCountByState(IOService.DB_IO, "Uttar Pradesh");
 		boolean result = countPerCity == 4 && countPerState == 6;
 		Assert.assertTrue(result);
+	}
+
+	@Test
+	public void givenNewContact_WhenAdded_ShouldSyncWithDB() {
+		try {
+			AddressBookService serviceObject = new AddressBookService();
+			serviceObject.readContactData(IOService.DB_IO);
+			serviceObject.addContactToAddressBook("Shreshtra", "Balaji", "4/14 Airport Road", "Mumbai", "Maharashtra", 245245, "addressbooknew@capgemini.com",
+												  "9898989898", "TemporaryBook", "Temp");
+			boolean result = serviceObject.checkContactDataInSyncWithDB("Shreshtra", "Balaji");
+			Assert.assertTrue(result);
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
