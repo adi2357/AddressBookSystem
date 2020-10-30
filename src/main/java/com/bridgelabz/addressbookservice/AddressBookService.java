@@ -76,4 +76,8 @@ public class AddressBookService {
 		}
 		return null;
 	}
+
+	public int getCountByCity(IOService ioType, String city) {
+		return 0;
+	}
 }
