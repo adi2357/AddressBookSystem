@@ -1,6 +1,7 @@
 package com.bridgelabz.ioservice;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -140,7 +141,11 @@ public class AddressBookDBIOService {
 	}
 
 	public List<Contacts> readContactsForDateRange(LocalDate startDate, LocalDate endDate) throws DBException {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = String.format("select distinct contact.first_name as first_name, contact.last_name as last_name, contact.address as address, "
+				+ "contact.city as city, contact.state as state, contact.zip as zip, contact.email as email "
+				+ "from contact "
+				+ "inner join contact_book on contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
+				+ "where contact_book.date_added between '%s' and '%s' ;", Date.valueOf(startDate),Date.valueOf(endDate));
+		return this.getContactDataUsingDB(sql);
 	}
 }
