@@ -1,10 +1,14 @@
 package com.bridgelabz.addressbookservicetest;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.bridgelabz.addressbookservice.AddressBookService;
 import com.bridgelabz.addressbookservice.AddressBookService.IOService;
+import com.bridgelabz.model.Contacts;
 
 public class AddressBookServiceTest {
 
@@ -30,4 +34,14 @@ public class AddressBookServiceTest {
 		}
 	}
 
+	@Test
+	public void givenDateRange_WhenContactsRetrieved_ShouldMatchContactsCount() {
+	
+		AddressBookService serviceObject = new AddressBookService();
+		serviceObject.readContactData(IOService.DB_IO);
+		LocalDate startDate = LocalDate.of(2018, 01, 01);
+		LocalDate endDate = LocalDate.now();
+		List<Contacts> employeePayrollData = serviceObject.readContactsForDateRange(IOService.DB_IO, startDate, endDate);
+		Assert.assertEquals(4, employeePayrollData.size());
+	}
 }

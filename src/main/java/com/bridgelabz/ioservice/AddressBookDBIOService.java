@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +86,7 @@ public class AddressBookDBIOService {
 
 	private List<Contacts> getContactDataUsingResultSet(ResultSet resultSet) throws SQLException {
 		List<Contacts> contactDataList = new ArrayList<>();
-		while(resultSet.next()) {
+		while (resultSet.next()) {
 			String firstName = resultSet.getString("first_name");
 			String lastName = resultSet.getString("last_name");
 			String address = resultSet.getString("address");
@@ -93,22 +94,22 @@ public class AddressBookDBIOService {
 			String state = resultSet.getString("state");
 			int zip = resultSet.getInt("zip");
 			String email = resultSet.getString("email");
-			
+
 			List<String> phoneList = new ArrayList<>();
-			Map<String, String> addressBooks =new HashMap<>();
+			Map<String, String> addressBooks = new HashMap<>();
 			
-			try(Connection connection = this.establishConnection()){
+			try (Connection connection = this.establishConnection()) {
 				String sql = String.format("select contact.first_name as first_name, contact.last_name as last_name, contact_number.phone as phone "
 										 + "from contact "
 										 + "inner join contact_number on contact.first_name = contact_number.first_name and contact.last_name = contact_number.last_name "
 										 + "where contact.first_name = '%s' and contact.last_name = '%s';", firstName,lastName);
 				Statement statement = connection.createStatement();
 				ResultSet resultSetForContactNumber = statement.executeQuery(sql);
-				while(resultSetForContactNumber.next()) {
+				while (resultSetForContactNumber.next()) {
 					phoneList.add(resultSetForContactNumber.getString("phone"));
 				}
 			}
-			try(Connection connection = this.establishConnection()){
+			try (Connection connection = this.establishConnection()) {
 				String sql = String.format("select contact.first_name as first_name, contact.last_name as last_name, "
 										 + "address_book.name as address_book_name,contact_book.type as type "
 										 + "from contact "
@@ -117,11 +118,12 @@ public class AddressBookDBIOService {
 										 + "where contact.first_name = '%s' and contact.last_name = '%s';",firstName,lastName);
 				Statement statement = connection.createStatement();
 				ResultSet resultSetForAddressBookData = statement.executeQuery(sql);
-				while(resultSetForAddressBookData.next()) {
-					addressBooks.put(resultSetForAddressBookData.getString("address_book_name"),resultSetForAddressBookData.getString("type"));
+				while (resultSetForAddressBookData.next()) {
+					addressBooks.put(resultSetForAddressBookData.getString("address_book_name"), resultSetForAddressBookData.getString("type"));
 				}
 			}
-			contactDataList.add(new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks));
+			contactDataList
+					.add(new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks));
 		}
 		return contactDataList;
 	}
@@ -135,5 +137,10 @@ public class AddressBookDBIOService {
 		} catch (SQLException e) {
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
 		}
+	}
+
+	public List<Contacts> readContactsForDateRange(LocalDate startDate, LocalDate endDate) throws DBException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
