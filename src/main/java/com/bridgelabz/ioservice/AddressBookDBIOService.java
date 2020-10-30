@@ -65,6 +65,47 @@ public class AddressBookDBIOService {
 		return contactDataList;
 	}
 
+	public List<Contacts> readContactsForDateRange(LocalDate startDate, LocalDate endDate) throws DBException {
+		String sql = String.format("select distinct contact.first_name as first_name, contact.last_name as last_name, contact.address as address, "
+				+ "contact.city as city, contact.state as state, contact.zip as zip, contact.email as email "
+				+ "from contact "
+				+ "inner join contact_book on contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
+				+ "where contact_book.date_added between '%s' and '%s' ;", Date.valueOf(startDate),Date.valueOf(endDate));
+		return this.getContactDataUsingDB(sql);
+	}
+
+	public Map<String, Integer> getCountByCity() throws DBException {
+		String sql = "select city, count(*) as contacts_per_city from contact group by city;";
+		Map<String, Integer> cityToContactCountMap = new HashMap<>();
+		try (Connection connection = this.establishConnection()) {
+			System.out.println("Connection is successfull!!! " + connection);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				cityToContactCountMap.put(resultSet.getString("city"), resultSet.getInt("contacts_per_city"));
+			}
+		}catch (SQLException e) {
+			throw new DBException("Cannot establish connection",DBException.ExceptionType.CONNECTION_FAIL);
+		}
+		return cityToContactCountMap;
+	}
+
+	public Map<String, Integer> getCountByState() throws DBException {
+		String sql = "select state, count(*) as contacts_per_state from contact group by state;";
+		Map<String, Integer> stateToContactCountMap = new HashMap<>();
+		try (Connection connection = this.establishConnection()) {
+			System.out.println("Connection is successfull!!! " + connection);
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(sql);
+			while (resultSet.next()) {
+				stateToContactCountMap.put(resultSet.getString("state"), resultSet.getInt("contacts_per_state"));
+			}
+		}catch (SQLException e) {
+			throw new DBException("Cannot establish connection",DBException.ExceptionType.CONNECTION_FAIL);
+		}
+		return stateToContactCountMap;
+	}
+
 	public List<Contacts> readData() throws com.bridgelabz.exception.DBException {
 		String sql = "select * from contact;";
 		return this.getContactDataUsingDB(sql);
@@ -138,14 +179,5 @@ public class AddressBookDBIOService {
 		} catch (SQLException e) {
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
 		}
-	}
-
-	public List<Contacts> readContactsForDateRange(LocalDate startDate, LocalDate endDate) throws DBException {
-		String sql = String.format("select distinct contact.first_name as first_name, contact.last_name as last_name, contact.address as address, "
-				+ "contact.city as city, contact.state as state, contact.zip as zip, contact.email as email "
-				+ "from contact "
-				+ "inner join contact_book on contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
-				+ "where contact_book.date_added between '%s' and '%s' ;", Date.valueOf(startDate),Date.valueOf(endDate));
-		return this.getContactDataUsingDB(sql);
 	}
 }
