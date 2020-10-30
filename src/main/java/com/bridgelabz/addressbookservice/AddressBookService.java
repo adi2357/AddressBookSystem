@@ -8,7 +8,6 @@ import com.bridgelabz.exception.DBException;
 import com.bridgelabz.ioservice.AddressBookDBIOService;
 import com.bridgelabz.model.Contacts;
 
-
 public class AddressBookService {
 
 	public enum IOService {
@@ -43,12 +42,26 @@ public class AddressBookService {
 		}
 	}
 
-	public void updateContactEmail(String firstName, String lastName, String email) {
-		int result = addressBookDBService.updateContactEmail(firstName, lastName, email);
-		
+	private Contacts getContactData(String firstName, String lastName) {
+		return this.contactDataList.stream()
+				   .filter(contact -> contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName))
+				   .findFirst()
+				   .orElse(null);
 	}
 
-	public boolean checkContactDataInSyncWithDB(String firstName, String lastName) {
-		return false;
+	public void updateContactEmail(String firstName, String lastName, String email) throws DBException {
+		int result = addressBookDBService.updateContactEmail(firstName, lastName, email);
+		if(result == 0)
+			throw new DBException("Cannot update the employee payroll data", DBException.ExceptionType.UPDATE_ERROR);
+		Contacts contactData = this.getContactData(firstName, lastName);
+		if(contactData != null)
+			contactData.setEmail(email);
+		else
+			throw new DBException("Cannot find the employee payroll data", DBException.ExceptionType.INVALID_PAYROLL_DATA);
+	}
+
+	public boolean checkContactDataInSyncWithDB(String firstName, String lastName) throws DBException {
+		List<Contacts> contactDataList = addressBookDBService.getEmplyoeePayrollDataUsingName(firstName, lastName);
+		return contactDataList.get(0).equals(getContactData(firstName, lastName));
 	}
 }

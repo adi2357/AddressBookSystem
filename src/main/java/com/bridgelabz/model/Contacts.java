@@ -1,6 +1,7 @@
 package com.bridgelabz.model;
 
 import java.util.List;
+import java.util.Map;
 
 import com.opencsv.bean.CsvBindByName;
 
@@ -32,7 +33,7 @@ public class Contacts {
 	
 	private List<String> phoneList;
 	
-	private List<AddressBookData> addressBooks;
+	private Map<String,String> addressBooks;
 	
 	public Contacts() {
 	}
@@ -52,7 +53,7 @@ public class Contacts {
 	
 
 	public Contacts(String firstName, String lastName, String address, String city, String state, int zip, String email,
-			List<String> phoneList, List<AddressBookData> addressBooks) {
+			List<String> phoneList, Map<String, String> addressBooks) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -140,11 +141,11 @@ public class Contacts {
 		this.phoneList = phoneList;
 	}
 
-	public List<AddressBookData> getAddressBooks() {
+	public Map<String, String> getAddressBooks() {
 		return addressBooks;
 	}
 
-	public void setAddressBooks(List<AddressBookData> addressBooks) {
+	public void setAddressBooks(Map<String, String> addressBooks) {
 		this.addressBooks = addressBooks;
 	}
 
@@ -155,14 +156,70 @@ public class Contacts {
 				+ "Email : " + email);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o == this)
-			return true;
-		if (!(o instanceof Contacts))
-			return false;
-		Contacts person = (Contacts) o;
-		return firstName.equals(person.firstName) && lastName.equals(person.lastName);
+	public String printString() {
+		return "Contacts [firstName=" + firstName + ", lastName=" + lastName + ", address=" + address + ", city=" + city
+				+ ", state=" + state + ", zip=" + zip + ", email=" + email
+				+ ", phoneList=" + phoneList + ", addressBooks=" + addressBooks + "]";
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Contacts other = (Contacts) obj;
+		if (address == null) {
+			if (other.address != null)
+				return false;
+		} else if (!address.equals(other.address))
+			return false;
+		if (addressBooks == null) {
+			if (other.addressBooks != null)
+				return false;
+		} else if (!addressBooks.equals(other.addressBooks))
+			return false;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		} else if (!city.equals(other.city))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (firstName == null) {
+			if (other.firstName != null)
+				return false;
+		} else if (!firstName.equals(other.firstName))
+			return false;
+		if (lastName == null) {
+			if (other.lastName != null)
+				return false;
+		} else if (!lastName.equals(other.lastName))
+			return false;
+		if (phoneList == null) {
+			if (other.phoneList != null)
+				return false;
+		} else if (!phoneList.equals(other.phoneList))
+			return false;
+		if (phoneNumber == null) {
+			if (other.phoneNumber != null)
+				return false;
+		} else if (!phoneNumber.equals(other.phoneNumber))
+			return false;
+		if (state == null) {
+			if (other.state != null)
+				return false;
+		} else if (!state.equals(other.state))
+			return false;
+		if (zip != other.zip)
+			return false;
+		return true;
+	}
+
+	
 }

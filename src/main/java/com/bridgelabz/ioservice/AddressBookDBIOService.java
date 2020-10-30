@@ -7,10 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.bridgelabz.exception.DBException;
-import com.bridgelabz.model.AddressBookData;
 import com.bridgelabz.model.Contacts;
 
 public class AddressBookDBIOService {
@@ -33,6 +34,33 @@ public class AddressBookDBIOService {
 		String password = "First12@";
 		System.out.println("Establishing connection to database : " + jdbcURL);
 		return DriverManager.getConnection(jdbcURL, userName, password);
+	}
+
+	private void prepareStatementForContactData() throws DBException {
+		String sql = "select * from contact where first_name = ? and last_name = ?;";
+		try {
+			Connection connection = this.establishConnection();
+			System.out.println("Connection is successfull!!! " + connection);
+			this.addressBookDataStatement = connection.prepareStatement(sql);
+		}catch (SQLException e) {
+			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
+		}
+	}
+
+	public List<Contacts> getEmplyoeePayrollDataUsingName(String firstName, String lastName) throws DBException {
+		List<Contacts> contactDataList = null;
+		if(this.addressBookDataStatement == null)
+			this.prepareStatementForContactData();
+		try {
+			addressBookDataStatement.setString(1, firstName);
+			addressBookDataStatement.setString(2, lastName);
+			ResultSet resultSet = addressBookDataStatement.executeQuery();
+			contactDataList = this.getContactDataUsingResultSet(resultSet);			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new DBException("Cannot execute query", DBException.ExceptionType.SQL_ERROR);
+		}
+		return contactDataList;
 	}
 
 	public List<Contacts> readData() throws com.bridgelabz.exception.DBException {
@@ -67,7 +95,7 @@ public class AddressBookDBIOService {
 			String email = resultSet.getString("email");
 			
 			List<String> phoneList = new ArrayList<>();
-			List<AddressBookData> addressBooks =new ArrayList<AddressBookData>();
+			Map<String, String> addressBooks =new HashMap<>();
 			
 			try(Connection connection = this.establishConnection()){
 				String sql = String.format("select contact.first_name as first_name, contact.last_name as last_name, contact_number.phone as phone "
@@ -90,7 +118,7 @@ public class AddressBookDBIOService {
 				Statement statement = connection.createStatement();
 				ResultSet resultSetForAddressBookData = statement.executeQuery(sql);
 				while(resultSetForAddressBookData.next()) {
-					addressBooks.add(new AddressBookData(resultSetForAddressBookData.getString("address_book_name"),resultSetForAddressBookData.getString("type")));
+					addressBooks.put(resultSetForAddressBookData.getString("address_book_name"),resultSetForAddressBookData.getString("type"));
 				}
 			}
 			contactDataList.add(new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks));
@@ -98,7 +126,14 @@ public class AddressBookDBIOService {
 		return contactDataList;
 	}
 
-	public int updateContactEmail(String firstName, String lastName, String email) {
-		return 0;
+	public int updateContactEmail(String firstName, String lastName, String email) throws DBException {
+		String sql = String.format("update contact set email = '%s' where first_name = '%s' and last_name = '%s' ;", email, firstName, lastName);
+		try (Connection connection = this.establishConnection()) {
+			System.out.println("Connection is successfull!!! " + connection);
+			Statement statement = connection.createStatement();
+			return statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
+		}
 	}
 }
