@@ -74,7 +74,7 @@ public class AddressBookServiceTest {
 	}
 
 	@Test
-	public void givenMultipleContacts_WhenAddedToDB_ShouldMatchContactCount() {
+	public void givenMultipleContacts_WhenAddedToDB_ShouldMatchContactCount() throws InterruptedException {
 		AddressBookService serviceObject = new AddressBookService();
 		serviceObject.readContactData(IOService.DB_IO);
 		Contacts[] arrayOfContacts = {
@@ -82,11 +82,16 @@ public class AddressBookServiceTest {
 						"7777777777","TemporaryBook","Temp"),
 				new Contacts("Karina", "Sharma","8/88 Karim Road", "Mumbai", "Maharashtra", 454561, "addressbooknew2@capgemini.com",
 						"8888888888","TemporaryBook","Temp"),
+				new Contacts("Mori", "Singh","4/18 Kirana Nagar", "Bhopal", "Madhya Pradesh", 264561, "addressbooknew3@capgemini.com",
+						"6666666666","TemporaryBook","Temp"),
+				new Contacts("Shila", "Dixit","2/120 Sadar Colony", "Jabalpur", "Madhya Pradesh", 482001, "addressbooknew4@capgemini.com",
+						"8989454599","TemporaryBook","Temp"),
 				};
 		Instant start = Instant.now();
 		serviceObject.addContactListToAddressBook(Arrays.asList(arrayOfContacts));
 		Instant end = Instant.now();
 		System.out.println("Duration with Threading : " + Duration.between(start, end));
-		Assert.assertEquals(13, serviceObject.sizeOfContactList());
+		
+		Assert.assertEquals(15, serviceObject.sizeOfContactList());
 	}
 }

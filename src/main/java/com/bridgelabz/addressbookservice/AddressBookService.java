@@ -129,7 +129,7 @@ public class AddressBookService {
 		});
 		while(contactAdditionStatus.containsValue(false)) {
 			try {
-				Thread.sleep(10);;
+				Thread.sleep(40);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
