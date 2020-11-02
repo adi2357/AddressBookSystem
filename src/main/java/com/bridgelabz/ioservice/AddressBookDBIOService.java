@@ -18,6 +18,7 @@ import com.bridgelabz.model.Contacts;
 
 public class AddressBookDBIOService {
 
+	private int connectionCounter = 0;
 	private PreparedStatement addressBookDataStatement;
 	private static AddressBookDBIOService addressBookDBService;
 
@@ -34,15 +35,20 @@ public class AddressBookDBIOService {
 		String jdbcURL = "jdbc:mysql://localhost:3306/address_book_service";
 		String userName = "root";
 		String password = "First12@";
-		System.out.println("Establishing connection to database : " + jdbcURL);
-		return DriverManager.getConnection(jdbcURL, userName, password);
+		Connection connection;
+		connectionCounter++;
+		System.out.println("Processing Thread : " + Thread.currentThread().getName() + 
+						   " Establishing connection to database with Id : " + connectionCounter);
+		connection = DriverManager.getConnection(jdbcURL, userName, password);
+		System.out.println("Processing Thread : " + Thread.currentThread().getName() + 
+						   " Id : " + connectionCounter + " Connection is successfull!!! " + connection);
+		return connection;
 	}
 
 	private void prepareStatementForContactData() throws DBException {
 		String sql = "select * from contact where first_name = ? and last_name = ?;";
 		try {
 			Connection connection = this.establishConnection();
-			System.out.println("Connection is successfull!!! " + connection);
 			this.addressBookDataStatement = connection.prepareStatement(sql);
 		}catch (SQLException e) {
 			throw new DBException("Cannot establish connection", DBException.ExceptionType.CONNECTION_FAIL);
@@ -78,7 +84,6 @@ public class AddressBookDBIOService {
 		String sql = "select city, count(*) as contacts_per_city from contact group by city;";
 		Map<String, Integer> cityToContactCountMap = new HashMap<>();
 		try (Connection connection = this.establishConnection()) {
-			System.out.println("Connection is successfull!!! " + connection);
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
@@ -94,7 +99,6 @@ public class AddressBookDBIOService {
 		String sql = "select state, count(*) as contacts_per_state from contact group by state;";
 		Map<String, Integer> stateToContactCountMap = new HashMap<>();
 		try (Connection connection = this.establishConnection()) {
-			System.out.println("Connection is successfull!!! " + connection);
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
 			while (resultSet.next()) {
@@ -115,7 +119,6 @@ public class AddressBookDBIOService {
 		List<Contacts> contactDataList = null;
 		try {
 			Connection connection = this.establishConnection();
-			System.out.println("Connection is successfull!!! " + connection);
 			Statement statement = connection.createStatement();
 			ResultSet resultSet = statement.executeQuery(sql);
 			contactDataList = this.getContactDataUsingResultSet(resultSet);
@@ -161,7 +164,7 @@ public class AddressBookDBIOService {
 				Statement statement = connection.createStatement();
 				ResultSet resultSetForAddressBookData = statement.executeQuery(sql);
 				while (resultSetForAddressBookData.next()) {
-					addressBooks.put(resultSetForAddressBookData.getString("address_book_name"), resultSetForAddressBookData.getString("type"));
+					addressBooks.put(resultSetForAddressBookData.getString("type"), resultSetForAddressBookData.getString("address_book_name"));
 				}
 			}
 			contactDataList
@@ -173,7 +176,6 @@ public class AddressBookDBIOService {
 	public int updateContactEmail(String firstName, String lastName, String email) throws DBException {
 		String sql = String.format("update contact set email = '%s' where first_name = '%s' and last_name = '%s' ;", email, firstName, lastName);
 		try (Connection connection = this.establishConnection()) {
-			System.out.println("Connection is successfull!!! " + connection);
 			Statement statement = connection.createStatement();
 			return statement.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -185,12 +187,11 @@ public class AddressBookDBIOService {
 			String state, int zip, String email, String phone, String addressBookName, String type) throws DBException {
 		List<String> phoneList = new ArrayList<>();
 		Map<String, String> addressBooks = new HashMap<>();
-		Contacts newContact =null;
+		Contacts newContact = null;
 		Connection connection = null;
 		try {
 			connection = this.establishConnection();
 			connection.setAutoCommit(false);
-			System.out.println("Connection is successfull!!! " + connection);
 		} catch (SQLException e) {
 			try {
 				connection.rollback();
@@ -199,16 +200,12 @@ public class AddressBookDBIOService {
 			}
 		}
 		try (Statement statement = connection.createStatement()) {
-			String sqlToRetrieveAddressBookNameAndType = 
-					String.format("select address_book.name as address_book_name, address_book.type as type "
-								+ "from address_book "
-								+ "inner join contact_book on contact_book.type = address_book.type "
-								+ "inner join contact on contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
-								+ "where contact.first_name = '%s' and contact.last_name = '%s' ; ", firstName, lastName);
+			String sqlToRetrieveAddressBookNameAndType = "select address_book.name as address_book_name, address_book.type as type "
+													   + "from address_book ";
 			ResultSet resultSetToRetrieveAddressBookNameAndType = statement.executeQuery(sqlToRetrieveAddressBookNameAndType);
 			while(resultSetToRetrieveAddressBookNameAndType.next()) {
-				addressBooks.put(resultSetToRetrieveAddressBookNameAndType.getString("address_book_name"), 
-								 resultSetToRetrieveAddressBookNameAndType.getString("type"));
+				addressBooks.put(resultSetToRetrieveAddressBookNameAndType.getString("type"), 
+								 resultSetToRetrieveAddressBookNameAndType.getString("address_book_name"));
 			}
 			if(!addressBooks.containsKey(type)) {
 				String sqlToInsert = String.format("insert into address_book (name, type) values  ('%s','%s');", addressBookName, type);

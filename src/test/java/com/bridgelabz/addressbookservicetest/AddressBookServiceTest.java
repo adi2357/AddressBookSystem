@@ -1,9 +1,10 @@
 package com.bridgelabz.addressbookservicetest;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,11 +65,28 @@ public class AddressBookServiceTest {
 			AddressBookService serviceObject = new AddressBookService();
 			serviceObject.readContactData(IOService.DB_IO);
 			serviceObject.addContactToAddressBook("Shreshtra", "Balaji", "4/14 Airport Road", "Mumbai", "Maharashtra", 245245, "addressbooknew@capgemini.com",
-												  "9898989898", "TemporaryBook", "Temp");
+												  "9999999999", "TemporaryBook", "Temp");
 			boolean result = serviceObject.checkContactDataInSyncWithDB("Shreshtra", "Balaji");
 			Assert.assertTrue(result);
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void givenMultipleContacts_WhenAddedToDB_ShouldMatchContactCount() {
+		AddressBookService serviceObject = new AddressBookService();
+		serviceObject.readContactData(IOService.DB_IO);
+		Contacts[] arrayOfContacts = {
+				new Contacts("Alisha", "Kori","89/11 Deep Road", "Mumbai", "Maharashtra", 456281, "addressbooknew1@capgemini.com",
+						"7777777777","TemporaryBook","Temp"),
+				new Contacts("Karina", "Sharma","8/88 Karim Road", "Mumbai", "Maharashtra", 454561, "addressbooknew2@capgemini.com",
+						"8888888888","TemporaryBook","Temp"),
+				};
+		Instant start = Instant.now();
+		serviceObject.addContactListToAddressBook(Arrays.asList(arrayOfContacts));
+		Instant end = Instant.now();
+		System.out.println("Duration with Threading : " + Duration.between(start, end));
+		Assert.assertEquals(13, serviceObject.sizeOfContactList());
 	}
 }

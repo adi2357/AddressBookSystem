@@ -2,6 +2,7 @@ package com.bridgelabz.addressbookservice;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -105,10 +106,33 @@ public class AddressBookService {
 	public void addContactToAddressBook(String firstName, String lastName, String address, String city, String state,
 			int zip, String email, String phone, String addressBookName, String type) {
 		try {
-			this.contactDataList.add(addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, addressBookName, type));
+			Contacts newContact = addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, addressBookName, type);
+			if(newContact != null) this.contactDataList.add(newContact);
 		}catch (DBException e) {
 			e.printStackTrace();
 		}
-		
+	}
+
+	public void addContactListToAddressBook(List<Contacts> contactList) {
+		Map<Integer, Boolean> contactAdditionStatus = new HashMap<Integer, Boolean>();
+		contactList.stream().forEach(c -> {
+			Runnable contactAddition = () -> {
+				contactAdditionStatus.put(c.hashCode(), false);
+				System.out.println("\nAdding Contact : " + Thread.currentThread().getName());
+				addContactToAddressBook(c.getFirstName(), c.getLastName(), c.getAddress(), c.getCity(), c.getState(), c.getZip(), 
+						c.getEmail(), c.getPhoneList().get(0), c.getAddressBookName(), c.getAddressBookType());
+				contactAdditionStatus.put(c.hashCode(), true);
+				System.out.println("Added Contact : " + Thread.currentThread().getName() + "\n");
+			};
+			Thread thread = new Thread(contactAddition, c.getFullName());
+			thread.start();
+		});
+		while(contactAdditionStatus.containsValue(false)) {
+			try {
+				Thread.sleep(10);;
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
 }
