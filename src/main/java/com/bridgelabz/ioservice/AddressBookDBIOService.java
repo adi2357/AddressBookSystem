@@ -141,7 +141,8 @@ public class AddressBookDBIOService {
 			String email = resultSet.getString("email");
 
 			List<String> phoneList = new ArrayList<>();
-			Map<String, String> addressBooks = new HashMap<>();
+			List<String> addressBookTypeList = new ArrayList<>();			
+			List<String> addressBookNameList = new ArrayList<>();
 			
 			try (Connection connection = this.establishConnection()) {
 				String sql = String.format("select contact.first_name as first_name, contact.last_name as last_name, contact_number.phone as phone "
@@ -164,11 +165,12 @@ public class AddressBookDBIOService {
 				Statement statement = connection.createStatement();
 				ResultSet resultSetForAddressBookData = statement.executeQuery(sql);
 				while (resultSetForAddressBookData.next()) {
-					addressBooks.put(resultSetForAddressBookData.getString("type"), resultSetForAddressBookData.getString("address_book_name"));
+					addressBookTypeList.add(resultSetForAddressBookData.getString("type"));
+					addressBookNameList.add(resultSetForAddressBookData.getString("address_book_name"));
 				}
 			}
 			contactDataList
-					.add(new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks));
+					.add(new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBookTypeList, addressBookNameList));
 		}
 		return contactDataList;
 	}
@@ -184,9 +186,10 @@ public class AddressBookDBIOService {
 	}
 
 	public Contacts addContactToAddressBook(String firstName, String lastName, String address, String city,
-			String state, int zip, String email, String phone, String addressBookName, String type) throws DBException {
+			String state, int zip, String email, String phone, String type, String addressBookName) throws DBException {
 		List<String> phoneList = new ArrayList<>();
-		Map<String, String> addressBooks = new HashMap<>();
+		List<String> addressBookTypeList = new ArrayList<>();
+		List<String> addressBookNameList = new ArrayList<>();
 		Contacts newContact = null;
 		Connection connection = null;
 		try {
@@ -200,18 +203,19 @@ public class AddressBookDBIOService {
 			}
 		}
 		try (Statement statement = connection.createStatement()) {
-			String sqlToRetrieveAddressBookNameAndType = "select address_book.name as address_book_name, address_book.type as type "
-													   + "from address_book ";
+			boolean isExists = false;
+			String sqlToRetrieveAddressBookNameAndType = String.format("select name, type from address_book "
+																	 + "where name = '%s' and type = '%s';",addressBookName, type);
 			ResultSet resultSetToRetrieveAddressBookNameAndType = statement.executeQuery(sqlToRetrieveAddressBookNameAndType);
-			while(resultSetToRetrieveAddressBookNameAndType.next()) {
-				addressBooks.put(resultSetToRetrieveAddressBookNameAndType.getString("type"), 
-								 resultSetToRetrieveAddressBookNameAndType.getString("address_book_name"));
+			if(resultSetToRetrieveAddressBookNameAndType.next()) {
+				isExists = true;
 			}
-			if(!addressBooks.containsKey(type)) {
+			if(!isExists) {
 				String sqlToInsert = String.format("insert into address_book (name, type) values  ('%s','%s');", addressBookName, type);
 				int addressBookRowsUpdated = statement.executeUpdate(sqlToInsert, statement.RETURN_GENERATED_KEYS);
 				if(addressBookRowsUpdated == 1) {
-					addressBooks.put(addressBookName, type);
+					addressBookTypeList.add(type);
+					addressBookNameList.add(addressBookName);
 				}
 				System.out.println("Inserted into Address Book");
 			}
@@ -275,23 +279,26 @@ public class AddressBookDBIOService {
 			}
 		}
 		try (Statement statement = connection.createStatement()) {
-			boolean isExists = false;
-			String sqlToRetrieveContactNameAndBookType = 
-					String.format("select first_name, last_name, type "
+			String sqlToRetrieveBookNameAndBookType = 
+					String.format("select contact_book.type as type, address_book.name as address_book_name "
 							+ "from contact_book "
-							+ "where first_name = '%s' and last_name = '%s' and type = '%s';", firstName, lastName, type);
-			Statement statementToRetrieveContactNameAndBookType = connection.createStatement();
-			ResultSet resultSetRetrieveContactNameAndBookType = statementToRetrieveContactNameAndBookType.executeQuery(sqlToRetrieveContactNameAndBookType);
-			if(resultSetRetrieveContactNameAndBookType.next()) {
-				isExists = true;
+							+ "inner join address_book on address_book.type = contact_book.type "
+							+ "where contact_book.first_name = '%s' and contact_book.last_name = '%s';", firstName, lastName);
+			Statement statementToRetrieveBookNameAndBookType = connection.createStatement();
+			ResultSet resultSetRetrieveBookNameAndBookType = statementToRetrieveBookNameAndBookType.executeQuery(sqlToRetrieveBookNameAndBookType);
+			while(resultSetRetrieveBookNameAndBookType.next()) {
+				addressBookTypeList.add(resultSetRetrieveBookNameAndBookType.getString("type"));
+				addressBookNameList.add(resultSetRetrieveBookNameAndBookType.getString("address_book_name"));
 			}
-			if(!isExists){
+			if(!addressBookTypeList.contains(type)){
 				String sqlToInsert = String.format(
 						"insert into contact_book "
 					   +"(type, first_name, last_name) values ('%s', '%s', '%s')", type, firstName, lastName);
 				int contactBookRowsUpdated = statement.executeUpdate(sqlToInsert);
 				if(contactBookRowsUpdated == 1) {
-					newContact = new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBooks);
+					addressBookTypeList.add(type);
+					addressBookNameList.add(addressBookName);
+					newContact = new Contacts(firstName, lastName, address, city, state, zip, email, phoneList, addressBookTypeList, addressBookNameList);
 					System.out.println("Inserted into Contact Book");
 				}
 			}

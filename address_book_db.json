@@ -1,0 +1,312 @@
+{
+  "address-book": [
+    {
+      "firstName": "Aditya",
+      "lastName": "Verma",
+      "address": "3/40 LDA Colony",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "zip": 224045,
+      "email": "addressbook@capgemini.com",
+      "phoneList": [
+        "8177893510"
+      ],
+      "addressBookTypeList": [
+        "Family"
+      ],
+      "addressBookNameList": [
+        "Emergency"
+      ],
+      "id": 1
+    },
+    {
+      "firstName": "Akhil",
+      "lastName": "Singh",
+      "address": "44/2 Indra Nagar",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zip": 284568,
+      "email": "addressbook5@capgemini.com",
+      "phoneList": [
+        "8456776440",
+        "8889036440"
+      ],
+      "addressBookTypeList": [
+        "Profession"
+      ],
+      "addressBookNameList": [
+        "Colleagues"
+      ],
+      "id": 2
+    },
+    {
+      "firstName": "Alan",
+      "lastName": "Wake",
+      "address": "8/11 Kalyan Nagar",
+      "city": "Kanpur",
+      "state": "Uttar Pradesh",
+      "zip": 451673,
+      "email": "addressbook9@capgemini.com",
+      "phoneList": [
+        "7845651761"
+      ],
+      "addressBookTypeList": [
+        "Friends"
+      ],
+      "addressBookNameList": [
+        "Personal"
+      ],
+      "id": 3
+    },
+    {
+      "firstName": "Alisha",
+      "lastName": "Kori",
+      "address": "89/11 Deep  Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zip": 456281,
+      "email": "addressbooknew1@capgemini.com",
+      "phoneList": [
+        "7777777777"
+      ],
+      "addressBookTypeList": [
+        "TemporaryBook"
+      ],
+      "addressBookNameList": [
+        "Temp"
+      ],
+      "id": 4
+    },
+    {
+      "firstName": "Amar",
+      "lastName": "Parik",
+      "address": "8/11 Dumna Road",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zip": 456123,
+      "email": "addressbook3@capgemini.com",
+      "phoneList": [
+        "7894651324"
+      ],
+      "addressBookTypeList": [
+        "Profession"
+      ],
+      "addressBookNameList": [
+        "Colleagues"
+      ],
+      "id": 5
+    },
+    {
+      "firstName": "Ashish",
+      "lastName": "Bisht",
+      "address": "7/11 Shringar Nagar",
+      "city": "Bhopal",
+      "state": "Madhya Pradesh",
+      "zip": 789456,
+      "email": "addressbook4@capgemini.com",
+      "phoneList": [
+        "9876543122"
+      ],
+      "addressBookTypeList": [
+        "Profession"
+      ],
+      "addressBookNameList": [
+        "Colleagues"
+      ],
+      "id": 6
+    },
+    {
+      "firstName": "Ashok",
+      "lastName": "Kumar",
+      "address": "8/22 Kalyan Nagar",
+      "city": "Kanpur",
+      "state": "Uttar Pradesh",
+      "zip": 289558,
+      "email": "addressbook2@capgemini.com",
+      "phoneList": [
+        "8123476440"
+      ],
+      "addressBookTypeList": [
+        "Friends"
+      ],
+      "addressBookNameList": [
+        "Personal"
+      ],
+      "id": 7
+    },
+    {
+      "firstName": "Boby",
+      "lastName": "Kumar",
+      "address": "44/2 Indra Nagar",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "zip": 284568,
+      "email": "addressbook6@capgemini.com",
+      "phoneList": [
+        "8456776440"
+      ],
+      "addressBookTypeList": [
+        "Friends"
+      ],
+      "addressBookNameList": [
+        "Personal"
+      ],
+      "id": 8
+    },
+    {
+      "firstName": "Carie",
+      "lastName": "Stone",
+      "address": "8/33 Kashi Colony",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "zip": 224655,
+      "email": "addressbook7@capgemini.com",
+      "phoneList": [
+        "8889079850"
+      ],
+      "addressBookTypeList": [
+        "Profession"
+      ],
+      "addressBookNameList": [
+        "Colleagues"
+      ],
+      "id": 9
+    },
+    {
+      "firstName": "Karina",
+      "lastName": "Sharma",
+      "address": "8/88 Karim Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zip": 454561,
+      "email": "addressbooknew2@capgemini.com",
+      "phoneList": [
+        "8888888888"
+      ],
+      "addressBookTypeList": [
+        "TemporaryBook"
+      ],
+      "addressBookNameList": [
+        "Temp"
+      ],
+      "id": 10
+    },
+    {
+      "firstName": "Max",
+      "lastName": "Preacher",
+      "address": "7/77 Dumna Road",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zip": 246518,
+      "email": "addressbook8@capgemini.com",
+      "phoneList": [
+        "8178932440"
+      ],
+      "addressBookTypeList": [
+        "Family",
+        "Friends"
+      ],
+      "addressBookNameList": [
+        "Emergency",
+        "Personal"
+      ],
+      "id": 11
+    },
+    {
+      "firstName": "Mori",
+      "lastName": "Singh",
+      "address": "4/18 Kirana Nagar",
+      "city": "Bhopal",
+      "state": "Madhya Pradesh",
+      "zip": 264561,
+      "email": "addressbooknew3@capgemini.com",
+      "phoneList": [
+        "6666666666"
+      ],
+      "addressBookTypeList": [
+        "TemporaryBook"
+      ],
+      "addressBookNameList": [
+        "Temp"
+      ],
+      "id": 12
+    },
+    {
+      "firstName": "Sam",
+      "lastName": "Brian",
+      "address": "11/11 Shringar Nagar",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "zip": 789751,
+      "email": "addressbook10@capgemini.com",
+      "phoneList": [
+        "8876544688"
+      ],
+      "addressBookTypeList": [
+        "Profession"
+      ],
+      "addressBookNameList": [
+        "Colleagues"
+      ],
+      "id": 13
+    },
+    {
+      "firstName": "Shila",
+      "lastName": "Dixit",
+      "address": "2/120 Sadar Colony",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zip": 482001,
+      "email": "addressbooknew4@capgemini.com",
+      "phoneList": [
+        "8989454599"
+      ],
+      "addressBookTypeList": [
+        "TemporaryBook"
+      ],
+      "addressBookNameList": [
+        "Temp"
+      ],
+      "id": 14
+    },
+    {
+      "firstName": "Shreshtra",
+      "lastName": "Balaji",
+      "address": "4/14 Airport Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zip": 245245,
+      "email": "addressbooknew@capgemini.com",
+      "phoneList": [
+        "9898989898",
+        "9999999999"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 15
+    },
+    {
+      "firstName": "Aman",
+      "lastName": "Singhal",
+      "address": "19/11 Akash Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zip": 458881,
+      "email": "addressbooknew5@capgemini.com",
+      "phoneList": [
+        "9966996669"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 16
+    }
+  ]
+}

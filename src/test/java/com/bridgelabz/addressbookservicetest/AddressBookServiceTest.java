@@ -7,13 +7,40 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.bridgelabz.addressbookservice.AddressBookService;
 import com.bridgelabz.addressbookservice.AddressBookService.IOService;
 import com.bridgelabz.model.Contacts;
+import com.google.gson.Gson;
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 public class AddressBookServiceTest {
+
+	@Before
+	public void setup() {
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = 3000;
+	}
+
+	public Contacts[] getContactsList() {
+		Response response = RestAssured.get("/address-book");
+		System.out.println("CONTACT Entries in JSON Server :\n" + response.asString());
+		Contacts[] arrayOfContacts = new Gson().fromJson(response.asString(), Contacts[].class);
+		return arrayOfContacts;
+	}
+
+	public Response addContactToJsonServer(Contacts ContactData) {
+		String contactJson = new Gson().toJson(ContactData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(contactJson);
+		return request.post("/address-book");
+	}
 
 	@Test
 	public void givenContactsInDB_WhenRetrieved_ShouldMatchContactsCount() {
@@ -65,7 +92,7 @@ public class AddressBookServiceTest {
 			AddressBookService serviceObject = new AddressBookService();
 			serviceObject.readContactData(IOService.DB_IO);
 			serviceObject.addContactToAddressBook("Shreshtra", "Balaji", "4/14 Airport Road", "Mumbai", "Maharashtra", 245245, "addressbooknew@capgemini.com",
-												  "9999999999", "TemporaryBook", "Temp");
+												  "9999999999", "Temp", "TemporaryBook");
 			boolean result = serviceObject.checkContactDataInSyncWithDB("Shreshtra", "Balaji");
 			Assert.assertTrue(result);
 		}catch (Exception e) {
@@ -78,20 +105,46 @@ public class AddressBookServiceTest {
 		AddressBookService serviceObject = new AddressBookService();
 		serviceObject.readContactData(IOService.DB_IO);
 		Contacts[] arrayOfContacts = {
-				new Contacts("Alisha", "Kori","89/11 Deep Road", "Mumbai", "Maharashtra", 456281, "addressbooknew1@capgemini.com",
-						"7777777777","TemporaryBook","Temp"),
-				new Contacts("Karina", "Sharma","8/88 Karim Road", "Mumbai", "Maharashtra", 454561, "addressbooknew2@capgemini.com",
-						"8888888888","TemporaryBook","Temp"),
-				new Contacts("Mori", "Singh","4/18 Kirana Nagar", "Bhopal", "Madhya Pradesh", 264561, "addressbooknew3@capgemini.com",
-						"6666666666","TemporaryBook","Temp"),
-				new Contacts("Shila", "Dixit","2/120 Sadar Colony", "Jabalpur", "Madhya Pradesh", 482001, "addressbooknew4@capgemini.com",
-						"8989454599","TemporaryBook","Temp"),
+				new Contacts(0,"Alisha", "Kori","89/11 Deep Road", "Mumbai", "Maharashtra", 456281, "addressbooknew1@capgemini.com", 
+						"7777777777", "Temp", "TemporaryBook"),
+				new Contacts(0,"Karina", "Sharma","8/88 Karim Road", "Mumbai", "Maharashtra", 454561, "addressbooknew2@capgemini.com", 
+						"8888888888", "Temp", "TemporaryBook"),
+				new Contacts(0,"Mori", "Singh","4/18 Kirana Nagar", "Bhopal", "Madhya Pradesh", 264561, "addressbooknew3@capgemini.com", 
+						"6666666666", "Temp", "TemporaryBook"),
+				new Contacts(0,"Shila", "Dixit","2/120 Sadar Colony", "Jabalpur", "Madhya Pradesh", 482001, "addressbooknew4@capgemini.com", 
+						"8989454599", "Temp", "TemporaryBook")
 				};
 		Instant start = Instant.now();
 		serviceObject.addContactListToAddressBook(Arrays.asList(arrayOfContacts));
 		Instant end = Instant.now();
+		Thread.sleep(20);
 		System.out.println("Duration with Threading : " + Duration.between(start, end));
 		
 		Assert.assertEquals(15, serviceObject.sizeOfContactList());
 	}
+
+	@Test
+	public void givenContactDataInJsonServer_WhenRetrieved_ShouldMatchContactCount() {
+		Contacts[] arrayOfContacts = getContactsList();
+		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
+		long entries = serviceObject.sizeOfContactList();
+		Assert.assertEquals(15, entries);
+	}
+
+	@Test
+	public void givenNewContact_WhenAdded_ShouldMatchContactCount() {
+		Contacts[] arrayOfContacts = getContactsList();
+		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
+		Contacts newContact = new Contacts(0,"Aman", "Singhal","19/11 Akash Road", "Mumbai", "Maharashtra", 458881, "addressbooknew5@capgemini.com",
+				"9966996669","Temp", "TemporaryBook");
+		Response response = addContactToJsonServer(newContact);
+		int statusCode = response.getStatusCode();
+		Assert.assertEquals(201, statusCode);
+
+		newContact = new Gson().fromJson(response.asString(), Contacts.class);
+		serviceObject.addContactToAddressBook(newContact);
+		long entries = serviceObject.sizeOfContactList();
+		Assert.assertEquals(16, entries);
+	}
 }
+

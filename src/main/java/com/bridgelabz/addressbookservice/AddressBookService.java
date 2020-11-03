@@ -28,7 +28,7 @@ public class AddressBookService {
 
 	public AddressBookService(List<Contacts> employeeList) {
 		this();
-		this.contactDataList = employeeList;
+		this.contactDataList = new ArrayList<>(employeeList);
 	}
 
 	public int sizeOfContactList() {
@@ -104,9 +104,9 @@ public class AddressBookService {
 	}
 
 	public void addContactToAddressBook(String firstName, String lastName, String address, String city, String state,
-			int zip, String email, String phone, String addressBookName, String type) {
+			int zip, String email, String phone, String type, String addressBookName) {
 		try {
-			Contacts newContact = addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, addressBookName, type);
+			Contacts newContact = addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, type, addressBookName);
 			if(newContact != null) this.contactDataList.add(newContact);
 		}catch (DBException e) {
 			e.printStackTrace();
@@ -120,7 +120,7 @@ public class AddressBookService {
 				contactAdditionStatus.put(c.hashCode(), false);
 				System.out.println("\nAdding Contact : " + Thread.currentThread().getName());
 				addContactToAddressBook(c.getFirstName(), c.getLastName(), c.getAddress(), c.getCity(), c.getState(), c.getZip(), 
-						c.getEmail(), c.getPhoneList().get(0), c.getAddressBookName(), c.getAddressBookType());
+						c.getEmail(), c.getPhoneList().get(0), c.getAddressBookTypeList().get(0), c.getAddressBookNameList().get(0));
 				contactAdditionStatus.put(c.hashCode(), true);
 				System.out.println("Added Contact : " + Thread.currentThread().getName() + "\n");
 			};
@@ -134,5 +134,11 @@ public class AddressBookService {
 				e1.printStackTrace();
 			}
 		}
+	}
+
+	public void addContactToAddressBook(Contacts newContact) {
+		this.addContactToAddressBook(newContact.getFirstName(), newContact.getLastName(), newContact.getAddress(), newContact.getCity(), newContact.getState(),
+				newContact.getZip(), newContact.getEmail(), newContact.getPhoneList().get(0),
+				newContact.getAddressBookTypeList().get(0), newContact.getAddressBookNameList().get(0));
 	}
 }
