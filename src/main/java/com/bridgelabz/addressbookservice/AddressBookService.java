@@ -26,9 +26,9 @@ public class AddressBookService {
 		addressBookDBService = AddressBookDBIOService.getInstatnce();
 	}
 
-	public AddressBookService(List<Contacts> employeeList) {
+	public AddressBookService(List<Contacts> contactList) {
 		this();
-		this.contactDataList = new ArrayList<>(employeeList);
+		this.contactDataList = new ArrayList<>(contactList);
 	}
 
 	public int sizeOfContactList() {
@@ -45,7 +45,7 @@ public class AddressBookService {
 		}
 	}
 
-	private Contacts getContactData(String firstName, String lastName) {
+	public Contacts getContactData(String firstName, String lastName) {
 		return this.contactDataList.stream()
 				   .filter(contact -> contact.getFirstName().equals(firstName) && contact.getLastName().equals(lastName))
 				   .findFirst()
@@ -60,11 +60,11 @@ public class AddressBookService {
 		if(contactData != null)
 			contactData.setEmail(email);
 		else
-			throw new DBException("Cannot find the employee payroll data", DBException.ExceptionType.INVALID_PAYROLL_DATA);
+			throw new DBException("Cannot find the employee payroll data", DBException.ExceptionType.INVALID_CONTACT_DATA);
 	}
 
 	public boolean checkContactDataInSyncWithDB(String firstName, String lastName) throws DBException {
-		List<Contacts> contactDataList = addressBookDBService.getEmplyoeePayrollDataUsingName(firstName, lastName);
+		List<Contacts> contactDataList = addressBookDBService.getContactDataUsingName(firstName, lastName);
 		return contactDataList.get(0).equals(getContactData(firstName, lastName));
 	}
 
@@ -107,7 +107,14 @@ public class AddressBookService {
 			int zip, String email, String phone, String type, String addressBookName) {
 		try {
 			Contacts newContact = addressBookDBService.addContactToAddressBook(firstName, lastName, address, city, state, zip, email, phone, type, addressBookName);
-			if(newContact != null) this.contactDataList.add(newContact);
+			if(newContact != null) {
+				Contacts exixtingContact = this.getContactData(firstName, lastName);
+				boolean isContactExists = (exixtingContact != null);
+				if(isContactExists) {
+					this.contactDataList.remove(exixtingContact);
+				}
+				this.contactDataList.add(newContact);
+			}
 		}catch (DBException e) {
 			e.printStackTrace();
 		}

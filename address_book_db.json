@@ -307,6 +307,82 @@
         "TemporaryBook"
       ],
       "id": 16
+    },
+    {
+      "firstName": "Morri",
+      "lastName": "Singhal",
+      "address": "10/12 Moti Nagar",
+      "city": "Kanpur",
+      "state": "Uttar Pradesh",
+      "zip": 215881,
+      "email": "addressbooknew6@capgemini.com",
+      "phoneList": [
+        "9888886669"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 17
+    },
+    {
+      "firstName": "Tapas",
+      "lastName": "Singh",
+      "address": "2/1 Hamesh Road",
+      "city": "Lucknow",
+      "state": "Uttar Pradesh",
+      "zip": 422581,
+      "email": "addressbooknew7@capgemini.com",
+      "phoneList": [
+        "9977776669"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 18
+    },
+    {
+      "firstName": "Alok",
+      "lastName": "Balaji",
+      "address": "4/6 Airport Road",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "zip": 458456,
+      "email": "addressbooknew8@capgemini.com",
+      "phoneList": [
+        "9966955559"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 19
+    },
+    {
+      "firstName": "Warren",
+      "lastName": "Estacaldo",
+      "address": "5/120 Dumna Road",
+      "city": "Jabalpur",
+      "state": "Madhya Pradesh",
+      "zip": 459851,
+      "email": "addressbooknew9@capgemini.com",
+      "phoneList": [
+        "9964566669"
+      ],
+      "addressBookTypeList": [
+        "Temp"
+      ],
+      "addressBookNameList": [
+        "TemporaryBook"
+      ],
+      "id": 20
     }
   ]
 }

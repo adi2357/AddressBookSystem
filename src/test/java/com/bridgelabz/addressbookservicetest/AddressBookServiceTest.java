@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.bridgelabz.addressbookservice.AddressBookService;
 import com.bridgelabz.addressbookservice.AddressBookService.IOService;
+import com.bridgelabz.exception.DBException;
 import com.bridgelabz.model.Contacts;
 import com.google.gson.Gson;
 
@@ -48,7 +49,7 @@ public class AddressBookServiceTest {
 		AddressBookService serviceObject = new AddressBookService();
 		serviceObject.readContactData(IOService.DB_IO);
 		int countOfEntriesRetrieved = serviceObject.sizeOfContactList();
-		Assert.assertEquals(11, countOfEntriesRetrieved);
+		Assert.assertEquals(10, countOfEntriesRetrieved);
 	}
 
 	@Test
@@ -59,7 +60,7 @@ public class AddressBookServiceTest {
 			serviceObject.updateContactEmail("Aditya", "Verma", "addressbook@capgemini.com");
 			boolean result = serviceObject.checkContactDataInSyncWithDB("Aditya", "Verma");
 			Assert.assertTrue(result);
-		}catch (Exception e) {
+		}catch (DBException e) {
 			e.printStackTrace();
 		}
 	}
@@ -72,7 +73,7 @@ public class AddressBookServiceTest {
 		LocalDate startDate = LocalDate.of(2018, 01, 01);
 		LocalDate endDate = LocalDate.now();
 		List<Contacts> employeePayrollData = serviceObject.readContactsForDateRange(IOService.DB_IO, startDate, endDate);
-		Assert.assertEquals(5, employeePayrollData.size());
+		Assert.assertEquals(4, employeePayrollData.size());
 	}
 
 	@Test
@@ -95,7 +96,7 @@ public class AddressBookServiceTest {
 												  "9999999999", "Temp", "TemporaryBook");
 			boolean result = serviceObject.checkContactDataInSyncWithDB("Shreshtra", "Balaji");
 			Assert.assertTrue(result);
-		}catch (Exception e) {
+		}catch (DBException e) {
 			e.printStackTrace();
 		}
 	}
@@ -132,7 +133,7 @@ public class AddressBookServiceTest {
 	}
 
 	@Test
-	public void givenNewContact_WhenAdded_ShouldMatchContactCount() {
+	public void givenNewContact_WhenAddedToJSONServer_ShouldMatch201ResponseContactCount() {
 		Contacts[] arrayOfContacts = getContactsList();
 		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
 		Contacts newContact = new Contacts(0,"Aman", "Singhal","19/11 Akash Road", "Mumbai", "Maharashtra", 458881, "addressbooknew5@capgemini.com",
@@ -146,5 +147,30 @@ public class AddressBookServiceTest {
 		long entries = serviceObject.sizeOfContactList();
 		Assert.assertEquals(16, entries);
 	}
-}
 
+	@Test
+	public void givenMultipleContacts_WhenAddedToJSONServer_ShouldMatchContactCountAndSyncWithMemory() {
+		Contacts[] arrayOfContacts = getContactsList();
+		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
+		Contacts[] arrayOfNewContacts = {
+				new Contacts(0,"Morri", "Singhal","10/12 Moti Nagar", "Kanpur", "Uttar Pradesh", 215881, "addressbooknew6@capgemini.com","9888886669","Temp", "TemporaryBook"),
+				new Contacts(0,"Tapas", "Singh","2/1 Hamesh Road", "Lucknow", "Uttar Pradesh", 422581, "addressbooknew7@capgemini.com","9977776669","Temp", "TemporaryBook"),
+				new Contacts(0,"Alok", "Balaji","4/6 Airport Road", "Mumbai", "Maharashtra", 458456, "addressbooknew8@capgemini.com","9966955559","Temp", "TemporaryBook"),
+				new Contacts(0,"Warren", "Estacaldo","5/120 Dumna Road", "Jabalpur", "Madhya Pradesh", 459851, "addressbooknew9@capgemini.com","9964566669","Temp", "TemporaryBook")		
+		};
+		try {
+			for(Contacts newContact : arrayOfNewContacts) {
+				Response response = addContactToJsonServer(newContact);
+				int statusCode = response.getStatusCode();
+				Assert.assertEquals(201, statusCode);
+				
+				newContact = new Gson().fromJson(response.asString(), Contacts.class);
+				serviceObject.addContactToAddressBook(newContact);
+				Assert.assertTrue(serviceObject.checkContactDataInSyncWithDB(newContact.getFirstName(), newContact.getLastName()));
+			}
+			long entries = serviceObject.sizeOfContactList();
+			Assert.assertEquals(20, entries);
+		}catch (DBException e) {
+		}
+	}
+}
