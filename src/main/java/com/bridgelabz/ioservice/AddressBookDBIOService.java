@@ -214,8 +214,6 @@ public class AddressBookDBIOService {
 				String sqlToInsert = String.format("insert into address_book (name, type) values  ('%s','%s');", addressBookName, type);
 				int addressBookRowsUpdated = statement.executeUpdate(sqlToInsert, statement.RETURN_GENERATED_KEYS);
 				if(addressBookRowsUpdated == 1) {
-//					addressBookTypeList.add(type);
-//					addressBookNameList.add(addressBookName);
 					System.out.println("Inserted into Address Book");
 				}				
 			}
