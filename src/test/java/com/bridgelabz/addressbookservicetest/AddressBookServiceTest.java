@@ -35,8 +35,8 @@ public class AddressBookServiceTest {
 		return arrayOfContacts;
 	}
 
-	public Response addContactToJsonServer(Contacts ContactData) {
-		String contactJson = new Gson().toJson(ContactData);
+	public Response addContactToJsonServer(Contacts contactData) {
+		String contactJson = new Gson().toJson(contactData);
 		RequestSpecification request = RestAssured.given();
 		request.header("Content-Type", "application/json");
 		request.body(contactJson);
@@ -44,8 +44,11 @@ public class AddressBookServiceTest {
 	}
 
 	public Response updateContactEmailInJsonServer(Contacts contactData) {
-		// TODO Auto-generated method stub
-		return null;
+		String contactJson = new Gson().toJson(contactData);
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		request.body(contactJson);
+		return request.put("/address-book/" + contactData.getId());
 	}
 
 	@Test
@@ -184,11 +187,13 @@ public class AddressBookServiceTest {
 		Contacts[] arrayOfContacts = getContactsList();
 		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
 		try {
-			serviceObject.updateContactEmail("Warren", "Estacaldo", "updatedemailk@capgemini.com");
+			serviceObject.updateContactEmail("Warren", "Estacaldo", "updatedemail@capgemini.com");
 			Contacts contactData = serviceObject.getContactData("Warren", "Estacaldo");
+			
 			Response response = updateContactEmailInJsonServer(contactData);
 			int statusCode = response.getStatusCode();
 			Assert.assertEquals(200, statusCode);
+			
 			Contacts updatedContact = new Gson().fromJson(response.asString(), Contacts.class);	
 			boolean result = serviceObject.checkContactDataInSyncWithDB(updatedContact.getFirstName(), updatedContact.getLastName());
 			Assert.assertTrue(result);
