@@ -52,7 +52,9 @@ public class AddressBookServiceTest {
 	}
 
 	public Response deleteContactFromJsonServer(Contacts contactData) {
-		return null;
+		RequestSpecification request = RestAssured.given();
+		request.header("Content-Type", "application/json");
+		return request.delete("/address-book/" + contactData.getId());
 	}
 
 	@Test
@@ -215,10 +217,13 @@ public class AddressBookServiceTest {
 			Response response = deleteContactFromJsonServer(contactData);
 			int statusCode = response.getStatusCode();
 			Assert.assertEquals(200, statusCode);
+			
 			serviceObject.deleteContactData("Warren", "Estacaldo");
 			long entries = serviceObject.sizeOfContactList();
 			Assert.assertEquals(19, entries);
+			
 			boolean result = serviceObject.checkContactDataInSyncWithDB("Warren", "Estacaldo");
+			Assert.assertTrue(result);
 		}catch (DBException e) {
 			e.printStackTrace();
 		}

@@ -364,25 +364,6 @@
         "TemporaryBook"
       ],
       "id": 19
-    },
-    {
-      "firstName": "Warren",
-      "lastName": "Estacaldo",
-      "address": "5/120 Dumna Road",
-      "city": "Jabalpur",
-      "state": "Madhya Pradesh",
-      "zip": 459851,
-      "email": "updatedemail@capgemini.com",
-      "phoneList": [
-        "9964566669"
-      ],
-      "addressBookTypeList": [
-        "Temp"
-      ],
-      "addressBookNameList": [
-        "TemporaryBook"
-      ],
-      "id": 20
     }
   ]
 }

@@ -60,12 +60,15 @@ public class AddressBookService {
 		if(contactData != null)
 			contactData.setEmail(email);
 		else
-			throw new DBException("Cannot find the employee payroll data", DBException.ExceptionType.INVALID_CONTACT_DATA);
+			throw new DBException("Cannot find the contact data in the list", DBException.ExceptionType.INVALID_CONTACT_DATA);
 	}
 
 	public boolean checkContactDataInSyncWithDB(String firstName, String lastName) throws DBException {
-		List<Contacts> contactDataList = addressBookDBService.getContactDataUsingName(firstName, lastName);
-		return contactDataList.get(0).equals(getContactData(firstName, lastName));
+		List<Contacts> contactDataListFromDB = addressBookDBService.getContactDataUsingName(firstName, lastName);
+		Contacts contactDataFromList = getContactData(firstName, lastName);
+		if(contactDataListFromDB.size() == 0 && contactDataFromList == null) 
+			return true;
+		return contactDataListFromDB.get(0).equals(contactDataFromList);
 	}
 
 	public List<Contacts> readContactsForDateRange(IOService ioType, LocalDate startDate, LocalDate endDate) {
@@ -149,7 +152,13 @@ public class AddressBookService {
 				newContact.getAddressBookTypeList().get(0), newContact.getAddressBookNameList().get(0));
 	}
 
-	public void deleteContactData(String firstName, String lastName) {
+	public void deleteContactData(String firstName, String lastName) throws DBException {
 		int result = addressBookDBService.deleteContactData(firstName, lastName);
+		if(result == 0)
+			throw new DBException("Cannot update the employee payroll data", DBException.ExceptionType.UPDATE_ERROR);
+		Contacts contactToDelete = this.getContactData(firstName, lastName);
+		if(contactToDelete != null)		this.contactDataList.remove(contactToDelete);
+		else
+			throw new DBException("Cannot find the contact data in the list", DBException.ExceptionType.INVALID_CONTACT_DATA);
 	}
 }

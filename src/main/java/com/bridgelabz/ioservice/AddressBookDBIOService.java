@@ -323,6 +323,17 @@ public class AddressBookDBIOService {
 	}
 
 	public int deleteContactData(String firstName, String lastName) {
+		String sql = String.format("delete contact_number, contact, contact_book from contact "
+				+ "inner join contact_book on  contact.first_name = contact_book.first_name and contact.last_name = contact_book.last_name "
+				+ "inner join contact_number on contact.first_name = contact_number.first_name and contact.last_name = contact_number.last_name "
+				+ "where contact.first_name = '%s' and contact.last_name = '%s'; ", firstName, lastName);
+		try(Connection connection = this.establishConnection()){
+			Statement statement = connection.createStatement();
+			int resultSet = statement.executeUpdate(sql);
+			return resultSet;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return 0;
 	}
 }
