@@ -51,6 +51,10 @@ public class AddressBookServiceTest {
 		return request.put("/address-book/" + contactData.getId());
 	}
 
+	public Response deleteContactFromJsonServer(Contacts contactData) {
+		return null;
+	}
+
 	@Test
 	public void givenContactsInDB_WhenRetrieved_ShouldMatchContactsCount() {
 
@@ -197,6 +201,24 @@ public class AddressBookServiceTest {
 			Contacts updatedContact = new Gson().fromJson(response.asString(), Contacts.class);	
 			boolean result = serviceObject.checkContactDataInSyncWithDB(updatedContact.getFirstName(), updatedContact.getLastName());
 			Assert.assertTrue(result);
+		}catch (DBException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void givenContact_WhenDeletedFromJSONServer_ShouldMatch200ResponseAndContactCountAndSyncWithDB() {
+		Contacts[] arrayOfContacts = getContactsList();
+		AddressBookService serviceObject = new AddressBookService(Arrays.asList(arrayOfContacts));
+		try {
+			Contacts contactData = serviceObject.getContactData("Warren", "Estacaldo");
+			Response response = deleteContactFromJsonServer(contactData);
+			int statusCode = response.getStatusCode();
+			Assert.assertEquals(200, statusCode);
+			serviceObject.deleteContactData("Warren", "Estacaldo");
+			long entries = serviceObject.sizeOfContactList();
+			Assert.assertEquals(19, entries);
+			boolean result = serviceObject.checkContactDataInSyncWithDB("Warren", "Estacaldo");
 		}catch (DBException e) {
 			e.printStackTrace();
 		}

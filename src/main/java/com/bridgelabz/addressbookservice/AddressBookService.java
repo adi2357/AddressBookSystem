@@ -148,4 +148,8 @@ public class AddressBookService {
 				newContact.getZip(), newContact.getEmail(), newContact.getPhoneList().get(0),
 				newContact.getAddressBookTypeList().get(0), newContact.getAddressBookNameList().get(0));
 	}
+
+	public void deleteContactData(String firstName, String lastName) {
+		int result = addressBookDBService.deleteContactData(firstName, lastName);
+	}
 }

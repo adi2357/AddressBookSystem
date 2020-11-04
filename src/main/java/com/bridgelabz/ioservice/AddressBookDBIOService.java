@@ -321,4 +321,8 @@ public class AddressBookDBIOService {
 		}
 		return newContact;
 	}
+
+	public int deleteContactData(String firstName, String lastName) {
+		return 0;
+	}
 }
